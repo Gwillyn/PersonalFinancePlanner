@@ -1,0 +1,80 @@
+
+Table users {
+  user_id int [pk, increment]
+  first_name varchar(50) [not null]
+  last_name varchar(50) [not null]
+  email varchar(150) [not null, unique]
+  password_hash varchar(255) [not null]
+  preferred_currency varchar(10) [not null]
+  created_at timestamp [not null]
+}
+
+Table income_sources {
+  income_id int [pk, increment]
+  user_id int [not null]
+  income_name varchar(100) [not null]
+  amount decimal(10,2) [not null]
+  payment_frequency varchar(20) [not null]
+  is_active boolean [not null]
+  created_at timestamp [not null]
+}
+
+Table categories {
+  category_id int [pk, increment]
+  user_id int [not null]
+  category_name varchar(100) [not null]
+  category_type varchar(30) [not null]
+  created_at timestamp [not null]
+}
+
+Table recurring_expenses {
+  expense_id int [pk, increment]
+  user_id int [not null]
+  category_id int [not null]
+  expense_name varchar(100) [not null]
+  amount decimal(10,2) [not null]
+  payment_frequency varchar(20) [not null]
+  is_active boolean [not null]
+  created_at timestamp [not null]
+}
+
+Table budget_plans {
+  plan_id int [pk, increment]
+  user_id int [not null]
+  plan_month int [not null]
+  plan_year int [not null]
+  created_at timestamp [not null]
+
+  indexes {
+    (user_id, plan_month, plan_year) [unique]
+  }
+}
+
+Table budget_allocations {
+  allocation_id int [pk, increment]
+  plan_id int [not null]
+  category_id int [not null]
+  allocated_amount decimal(10,2) [not null]
+  created_at timestamp [not null]
+}
+
+Table savings_goals {
+  goal_id int [pk, increment]
+  user_id int [not null]
+  goal_name varchar(150) [not null]
+  target_amount decimal(10,2) [not null]
+  current_amount decimal(10,2) [not null]
+  monthly_contribution decimal(10,2) [not null]
+  target_date date
+  goal_status varchar(30) [not null]
+  created_at timestamp [not null]
+}
+
+Ref: income_sources.user_id > users.user_id
+Ref: categories.user_id > users.user_id
+Ref: recurring_expenses.user_id > users.user_id
+Ref: recurring_expenses.category_id > categories.category_id
+Ref: budget_plans.user_id > users.user_id
+Ref: budget_allocations.plan_id > budget_plans.plan_id
+Ref: budget_allocations.category_id > categories.category_id
+Ref: savings_goals.user_id > users.user_id
