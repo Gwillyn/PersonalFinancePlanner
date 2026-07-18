@@ -1,4 +1,4 @@
-# PersonalBudgetTracker
+# PersonalFinancePlanner
 
 A personal finance tracker application. Developed with Java.
 
