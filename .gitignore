@@ -1,0 +1,10 @@
+# Eclipse workspace
+.metadata/
+
+# Java build output
+build/
+bin/
+
+# OS files
+.DS_Store
+Thumbs.db
