@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/logout")
+public class LogoutServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,11 +20,10 @@ public class HomeServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("userEmail") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
+        if (session != null) {
+            session.invalidate();
         }
 
-        response.sendRedirect(request.getContextPath() + "/dashboard");
+        response.sendRedirect(request.getContextPath() + "/login");
     }
 }

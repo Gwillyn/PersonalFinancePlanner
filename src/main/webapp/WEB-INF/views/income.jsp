@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <title>Budget</title>
+    <title>Income</title>
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/style.css">
@@ -20,12 +20,12 @@
 
 <header>
     <%@ include file="includes/header.jsp" %>
-    <h1 class="title">Budget</h1>
+    <h1 class="title">Income</h1>
 </header>
 
 <div class="container">
 
-    <h2>Manage Budget</h2>
+    <h2>Manage Income</h2>
 
     <% if (request.getAttribute("errorMessage") != null) { %>
         <p style="color: red;">
@@ -39,44 +39,52 @@
         </p>
     <% } %>
 
-    <% if (request.getAttribute("remainingAmount") != null) { %>
-        <p>
-            Remaining Amount:
-            $<%= String.format("%.2f",
-                (Double) request.getAttribute("remainingAmount")) %>
-        </p>
-    <% } %>
-
-    <form action="${pageContext.request.contextPath}/budget"
+    <form action="${pageContext.request.contextPath}/income"
           method="post">
 
         <div>
-            <label for="monthlyIncome">Monthly Income:</label>
+            <label for="incomeName">Income Name:</label>
 
-            <input type="number"
-                   id="monthlyIncome"
-                   name="monthlyIncome"
-                   step="0.01"
-                   min="0"
+            <input type="text"
+                   id="incomeName"
+                   name="incomeName"
                    required>
         </div>
 
         <br>
 
         <div>
-            <label for="budgetAmount">Budget Amount:</label>
+            <label for="amount">Amount:</label>
 
             <input type="number"
-                   id="budgetAmount"
-                   name="budgetAmount"
+                   id="amount"
+                   name="amount"
                    step="0.01"
-                   min="0"
+                   min="0.01"
                    required>
         </div>
 
         <br>
 
-        <button type="submit">Calculate Budget</button>
+        <div>
+            <label for="frequency">Payment Frequency:</label>
+
+            <select id="frequency"
+                    name="frequency"
+                    required>
+
+                <option value="">Select frequency</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Biweekly">Biweekly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Yearly">Yearly</option>
+
+            </select>
+        </div>
+
+        <br>
+
+        <button type="submit">Add Income</button>
 
     </form>
 
