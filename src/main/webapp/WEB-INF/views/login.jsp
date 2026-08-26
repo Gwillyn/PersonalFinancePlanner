@@ -16,7 +16,6 @@
 <body>
 <header>
 	<%@ include file="includes/header.jsp" %>
-
 </header>
 
 <div class="login_container">
@@ -31,11 +30,13 @@
 
     <form action="<%= request.getContextPath() %>/login" method="post">
 
+      <div class="entries">
         <div>
             <label for="email">Email:</label>
             <input type="email"
                    id="email"
                    name="email"
+                   placeholder="name@example.com"
                    required>
         </div>
 
@@ -48,13 +49,14 @@
                    name="password"
                    required>
         </div>
+      </div>
 
         <br>
 
         <button type="submit">Login</button>
         <div>
         	<p>Don't have an account? </p>
-        	<a href="register" class="button">Register</a>
+        	<a href="register" id="register_text">Sign Up</a>
         </div>
 
     </form>
