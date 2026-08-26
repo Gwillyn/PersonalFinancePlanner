@@ -1,0 +1,33 @@
+@charset "UTF-8";
+
+.login_container {
+	display: box;
+	margin: 40px auto 40px;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	border: 2px ridge black;
+	width: 600px;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 2px 2px;
+}
+
+.nav-links {
+	display: none;
+}
+.nav-links a {
+	display: none;
+}
+
+.button {
+	display: inline-block;
+	padding: 5px 5px;
+	background-color: grey;
+	color: black;
+	border: 1px solid black;
+	border-radius: 10px;
+	text-decoration: none;
+	cursor: pointer;
+}

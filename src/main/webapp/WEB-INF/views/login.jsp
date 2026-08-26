@@ -5,12 +5,21 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Login - Personal Budget Planner</title>
+    <title>Login</title>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+
 </head>
 
 <body>
+<header>
+	<%@ include file="includes/header.jsp" %>
 
-<div class="container">
+</header>
+
+<div class="login_container">
 
     <h2>Login</h2>
 
@@ -43,6 +52,10 @@
         <br>
 
         <button type="submit">Login</button>
+        <div>
+        	<p>Don't have an account? </p>
+        	<a href="register" class="button">Register</a>
+        </div>
 
     </form>
 
