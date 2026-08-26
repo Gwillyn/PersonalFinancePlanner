@@ -8,15 +8,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Register - Personal Budget Tracker</title>
+    <title>Register</title>
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 </head>
 
 <body>
+  <header>
+    <%@ include file="includes/header.jsp" %>
+  </header>
 
-    <h1>Create Account</h1>
+<div class="login_container">
+    <h2>Create Account</h2>
 
     <% if (request.getAttribute("errorMessage") != null) { %>
         <p style="color: red;">
@@ -33,6 +39,7 @@
     <form action="${pageContext.request.contextPath}/register"
           method="post">
 
+        <div class="entries">
         <div>
             <label for="firstName">First Name:</label>
             <input type="text"
@@ -58,6 +65,7 @@
             <input type="email"
                    id="email"
                    name="email"
+                   placeholder="name@example.com"
                    required>
         </div>
 
@@ -89,6 +97,7 @@
 
             </select>
         </div>
+        </div>
 
         <br>
 
@@ -96,12 +105,12 @@
 
     </form>
 
-    <p>
-        Already have an account?
-        <a href="${pageContext.request.contextPath}/login">
+    <p>Already have an account?</p>
+        <a href="${pageContext.request.contextPath}/login" id="register_text">
             Login
         </a>
-    </p>
+
+</div>
 
 </body>
 </html>

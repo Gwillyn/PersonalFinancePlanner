@@ -1,0 +1,64 @@
+@charset "UTF-8";
+
+.login_container {
+	display: box;
+	margin: 80px auto 40px;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	border: 2px ridge black;
+	width: 500px;
+	padding: 20px;
+	box-shadow: 2px 2px;
+}
+
+.nav-links {
+	display: none;
+}
+.nav-links a {
+	display: none;
+}
+
+label {
+  display: block;
+}
+
+.entries {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin: 10px auto 0;
+}
+
+.entries * {
+  padding:5px;
+}
+
+
+button {
+  margin-bottom: 20px;
+  font-size: inherit;
+  font: inherit;
+	display: inline-block;
+	padding: 6px 20px;
+	border-radius: 10px;
+	text-decoration: none;
+	cursor: pointer;
+  background-color: #24292f;
+  color: white;
+  border: 1px solid grey;
+}
+
+#register_text {
+  font-weight: bold;
+  text-decoration: none;
+  color: #24292f;
+}
+
+#preferredCurrency {
+  display: block;
+  width: 186px;
+}
+
