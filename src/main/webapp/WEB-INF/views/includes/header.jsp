@@ -7,7 +7,7 @@
     <ul class="nav-links">
 
         <li>
-            <a href="${pageContext.request.contextPath}/home">
+            <a href="${pageContext.request.contextPath}/dashboard">
                 Home
             </a>
         </li>
