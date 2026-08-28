@@ -14,6 +14,7 @@
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/navbar.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/profile.css">
 </head>
 
 <body>
@@ -42,6 +43,7 @@
     <form action="${pageContext.request.contextPath}/profile"
           method="post">
 
+      <div class="entries">
         <div>
             <label for="firstName">First Name:</label>
 
@@ -115,10 +117,11 @@
 
         <br>
 
-        <button type="submit">Update Profile</button>
+        <button class="button" type="submit">Update Profile</button>
 
     </form>
 
+</div>
 </div>
 
 </body>

@@ -34,7 +34,7 @@
 
 </header>
 
-<div class="container">
+<div class="dash_container">
 
     <div class="card"
          onclick="window.location.href='${pageContext.request.contextPath}/income'"

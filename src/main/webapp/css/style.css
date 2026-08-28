@@ -4,9 +4,57 @@
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+label {
+  display: block;
+}
+
 .title {
 	text-align: right;
 	padding: 20px;
 	font-size: 45px;
+}
+
+.entries {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin: 10px auto 0;
+}
+
+.container {
+	display: box;
+	margin: 80px auto 40px;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	border: 2px ridge black;
+	width: 500px;
+	padding: 20px;
+	box-shadow: 2px 2px;
+}
+
+button {
+  margin-bottom: 20px;
+  font-size: inherit;
+  font: inherit;
+	display: inline-block;
+	padding: 6px 20px;
+	border-radius: 10px;
+	text-decoration: none;
+	cursor: pointer;
+  background-color: #24292f;
+  color: white;
+  border: 1px solid grey;
+}
+
+.entries * {
+  padding:5px;
+}
+
+#preferredCurrency {
+  display: block;
+  width: 186px;
 }
 

@@ -28,7 +28,7 @@
     <h1 class="title">Savings Goals</h1>
 </header>
 
-<div>
+<div class="container">
 
     <h2>Manage Savings Goal</h2>
 
@@ -51,6 +51,7 @@
     <form action="${pageContext.request.contextPath}/savings"
           method="post">
 
+      <div class="entries">
         <div>
             <label for="goalName">Goal Name:</label>
 
@@ -118,6 +119,7 @@
             Add Savings Goal
         </button>
 
+      </div>
     </form>
 
 </div>

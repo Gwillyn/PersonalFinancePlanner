@@ -12,12 +12,13 @@
 	visibility: hidden;
 }
 
-.container {
+.dash_container {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
 	gap: 20px;
 }
+
 .card {
 	border: 2px solid black; 
 	border-radius: 10px;
@@ -31,5 +32,4 @@
 .card:hover {
 	box-shadow: 5px 5px;
 	transform: scale(1.01);
-	
 }

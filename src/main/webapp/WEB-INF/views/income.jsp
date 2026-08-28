@@ -42,6 +42,7 @@
     <form action="${pageContext.request.contextPath}/income"
           method="post">
 
+      <div class="entries">
         <div>
             <label for="incomeName">Income Name:</label>
 
@@ -86,6 +87,7 @@
 
         <button type="submit">Add Income</button>
 
+      </div>
     </form>
 
 </div>

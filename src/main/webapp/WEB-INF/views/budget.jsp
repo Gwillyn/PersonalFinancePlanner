@@ -50,6 +50,7 @@
     <form action="${pageContext.request.contextPath}/budget"
           method="post">
 
+      <div class="entries">
         <div>
             <label for="monthlyIncome">Monthly Income:</label>
 
@@ -77,6 +78,7 @@
         <br>
 
         <button type="submit">Calculate Budget</button>
+      </div>
 
     </form>
 
