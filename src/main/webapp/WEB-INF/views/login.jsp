@@ -18,7 +18,7 @@
 	<%@ include file="includes/header.jsp" %>
 </header>
 
-<div class="login_container">
+<div class="container">
 
     <h2>Login</h2>
 

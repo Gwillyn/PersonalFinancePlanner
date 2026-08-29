@@ -41,6 +41,7 @@
 
     <form action="${pageContext.request.contextPath}/expenses" method="post">
 
+      <div class="entries">
         <div>
             <label for="expenseName">Expense Name:</label>
 
@@ -85,7 +86,9 @@
 
         <button type="submit">Add Expense</button>
 
+      </div>
     </form>
+  
 
 </div>
 

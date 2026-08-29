@@ -21,7 +21,7 @@
     <%@ include file="includes/header.jsp" %>
   </header>
 
-<div class="login_container">
+<div class="container">
     <h2>Create Account</h2>
 
     <% if (request.getAttribute("errorMessage") != null) { %>
@@ -45,6 +45,7 @@
             <input type="text"
                    id="firstName"
                    name="firstName"
+                   placeholder="John"
                    required>
         </div>
 
@@ -55,6 +56,7 @@
             <input type="text"
                    id="lastName"
                    name="lastName"
+                   placeholder="Doe"
                    required>
         </div>
 
