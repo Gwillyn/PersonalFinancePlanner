@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.personalBudgetPlanner.database.UserDAO;
 
+import org.mindrot.jbcrypt.BCrypt;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,80 +15,78 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+  @Override
+  protected void doGet(HttpServletRequest request,
+      HttpServletResponse response)
+      throws ServletException, IOException {
 
-        request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-               .forward(request, response);
+    request.getRequestDispatcher("/WEB-INF/views/login.jsp")
+        .forward(request, response);
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request,
+      HttpServletResponse response)
+      throws ServletException, IOException {
+
+    String email = request.getParameter("email");
+    String password = request.getParameter("password");
+
+    if (email == null || email.trim().isEmpty()
+        || password == null || password.trim().isEmpty()) {
+
+      request.setAttribute(
+          "errorMessage",
+          "Email and password are required.");
+
+      request.getRequestDispatcher("/WEB-INF/views/login.jsp")
+          .forward(request, response);
+
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
+    UserDAO userDAO = new UserDAO();
 
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    String trimmedEmail = email.trim().toLowerCase();
 
-        if (email == null || email.trim().isEmpty()
-                || password == null || password.trim().isEmpty()) {
+    String storedHash = userDAO.getPasswordHashByEmail(trimmedEmail);
 
-            request.setAttribute(
-                    "errorMessage",
-                    "Email and password are required."
-            );
+    boolean validLogin = storedHash != null && BCrypt.checkpw(password, storedHash);
 
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-                   .forward(request, response);
+    if (!validLogin) {
 
-            return;
-        }
+      request.setAttribute(
+          "errorMessage",
+          "Invalid email or password.");
 
-        UserDAO userDAO = new UserDAO();
+      request.getRequestDispatcher("/WEB-INF/views/login.jsp")
+          .forward(request, response);
 
-        boolean validLogin =
-                userDAO.validateLogin(email.trim(), password);
-
-        if (!validLogin) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Invalid email or password."
-            );
-
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-                   .forward(request, response);
-
-            return;
-        }
-
-        Integer userId =
-                userDAO.findUserIdByEmail(email.trim());
-
-        if (userId == null) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Unable to load user account."
-            );
-
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp")
-                   .forward(request, response);
-
-            return;
-        }
-
-        HttpSession session = request.getSession();
-
-        session.setAttribute("userId", userId);
-        session.setAttribute("userEmail", email.trim());
-
-        response.sendRedirect(
-                request.getContextPath() + "/dashboard"
-        );
+      return;
     }
+
+    Integer userId = userDAO.findUserIdByEmail(trimmedEmail);
+
+    if (userId == null) {
+
+      request.setAttribute(
+          "errorMessage",
+          "Unable to load user account.");
+
+      request.getRequestDispatcher("/WEB-INF/views/login.jsp")
+          .forward(request, response);
+
+      return;
+    }
+
+    HttpSession session = request.getSession();
+
+    session.setAttribute("userId", userId);
+    session.setAttribute("userEmail", trimmedEmail);
+
+    response.sendRedirect(
+        request.getContextPath() + "/dashboard");
+  }
 }
