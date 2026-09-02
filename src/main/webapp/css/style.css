@@ -4,6 +4,21 @@
 	font-family: Arial, Helvetica, sans-serif;
 }
 
+.card {
+	border: 2px solid black; 
+	border-radius: 10px;
+	width: 400px;
+	margin: 20px;
+	padding: 20px;
+	text-align: center;
+	transition: box-shadow 0.1s ease;
+}
+
+.dash_card:hover {
+	box-shadow: 5px 5px;
+	transform: scale(1.01);
+}
+
 label {
   display: block;
 }
@@ -14,6 +29,10 @@ label {
 	font-size: 45px;
 }
 
+.sub_title {
+  font-size: 30px;
+}
+
 .entries {
   width: fit-content;
   display: flex;
@@ -22,14 +41,38 @@ label {
   margin: 10px auto 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.entry_list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.entry_card {
+	box-shadow: 5px 5px;
+  border-radius: 0px;
+	box-shadow: 2px 2px;
+}
+
+.entry_actions {
+  margin: 20px;
+}
+
+.entry_actions button {
+  margin-bottom: 0px;
+}
+
 .container {
-	display: box;
+	display: flex;
+  flex-direction: column;
 	margin: 80px auto 40px;
 	text-align: center;
-	justify-content: center;
 	align-items: center;
-	gap: 20px;
-	border: 2px ridge black;
+	border: 2px solid black;
 	width: 500px;
 	padding: 20px;
 	box-shadow: 2px 2px;
@@ -47,6 +90,18 @@ button {
   background-color: #24292f;
   color: white;
   border: 1px solid grey;
+}
+
+#entry_container {
+  text-align: center;
+}
+
+#add_button {
+  text-align: center;
+}
+
+#toggleEntry {
+  margin-top: 20px;
 }
 
 .entries * {
