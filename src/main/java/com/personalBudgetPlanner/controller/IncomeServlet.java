@@ -1,12 +1,7 @@
 package com.personalBudgetPlanner.controller;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import com.personalBudgetPlanner.database.DBConnection;
 import com.personalBudgetPlanner.database.IncomeDAO;
 
 import jakarta.servlet.ServletException;
@@ -28,7 +23,7 @@ public class IncomeServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("userEmail") == null) {
+        if (session == null || session.getAttribute("userId") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -44,7 +39,7 @@ public class IncomeServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("userEmail") == null) {
+        if (session == null || session.getAttribute("userId") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -64,7 +59,6 @@ public class IncomeServlet extends HttpServlet {
 
             request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                    .forward(request, response);
-
             return;
         }
 
@@ -81,43 +75,27 @@ public class IncomeServlet extends HttpServlet {
 
             } else {
 
-                String userEmail =
-                        (String) session.getAttribute("userEmail");
+                int userId = (Integer) session.getAttribute("userId");
 
-                Integer userId = findUserIdByEmail(userEmail);
+                IncomeDAO incomeDAO = new IncomeDAO();
 
-                if (userId == null) {
+                boolean saved = incomeDAO.addIncome(
+                        userId,
+                        incomeName.trim(),
+                        incomeAmount,
+                        frequency
+                );
 
+                if (saved) {
+                    response.sendRedirect(
+                            request.getContextPath() + "/dashboard"
+                    );
+                    return;
+                } else {
                     request.setAttribute(
                             "errorMessage",
-                            "No database user was found for this login email."
+                            "Income could not be saved."
                     );
-
-                } else {
-
-                    IncomeDAO incomeDAO = new IncomeDAO();
-
-                    boolean saved = incomeDAO.addIncome(
-                            userId,
-                            incomeName.trim(),
-                            incomeAmount,
-                            frequency
-                    );
-
-                    if (saved) {
-
-                        request.setAttribute(
-                                "successMessage",
-                                "Income was saved successfully."
-                        );
-
-                    } else {
-
-                        request.setAttribute(
-                                "errorMessage",
-                                "Income could not be saved."
-                        );
-                    }
                 }
             }
 
@@ -127,40 +105,9 @@ public class IncomeServlet extends HttpServlet {
                     "errorMessage",
                     "Please enter a valid income amount."
             );
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-            request.setAttribute(
-                    "errorMessage",
-                    "A database error occurred while saving the income."
-            );
         }
 
         request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                .forward(request, response);
-    }
-
-    private Integer findUserIdByEmail(String email) throws SQLException {
-
-        String sql =
-                "SELECT user_id FROM users WHERE email = ?";
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
-
-            statement.setString(1, email);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                if (resultSet.next()) {
-                    return resultSet.getInt("user_id");
-                }
-            }
-        }
-
-        return null;
     }
 }
