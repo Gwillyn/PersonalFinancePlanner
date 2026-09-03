@@ -3,37 +3,62 @@ package com.personalBudgetPlanner.database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 
 public class ExpenseDAO {
 
-    private static final String INSERT_EXPENSE_SQL =
-            "INSERT INTO recurring_expenses "
-            + "(user_id, category_id, expense_name, amount, payment_frequency) "
-            + "VALUES (?, ?, ?, ?, ?)";
+  private static final String INSERT_EXPENSE_SQL = "INSERT INTO recurring_expenses "
+      + "(user_id, category_id, expense_name, amount, payment_frequency) "
+      + "VALUES (?, ?, ?, ?, ?)";
 
-    public boolean addExpense(int userId,
-                              int categoryId,
-                              String expenseName,
-                              double amount,
-                              String paymentFrequency) {
+  public boolean addExpense(int userId,
+      int categoryId,
+      String expenseName,
+      double amount,
+      String paymentFrequency) {
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(INSERT_EXPENSE_SQL)) {
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(INSERT_EXPENSE_SQL)) {
 
-            statement.setInt(1, userId);
-            statement.setInt(2, categoryId);
-            statement.setString(3, expenseName);
-            statement.setDouble(4, amount);
-            statement.setString(5, paymentFrequency);
+      statement.setInt(1, userId);
+      statement.setInt(2, categoryId);
+      statement.setString(3, expenseName);
+      statement.setDouble(4, amount);
+      statement.setString(5, paymentFrequency);
 
-            int rowsInserted = statement.executeUpdate();
+      int rowsInserted = statement.executeUpdate();
 
-            return rowsInserted > 0;
+      return rowsInserted > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
+  }
+
+  public double getTotalExpenses(int userId) {
+
+    String sql = "SELECT COALESCE(SUM(amount), 0) AS total_expenses "
+        + "FROM recurring_expenses "
+        + "WHERE user_id = ? AND is_active = TRUE";
+
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, userId);
+
+      try (ResultSet resultSet = statement.executeQuery()) {
+
+        if (resultSet.next()) {
+          return resultSet.getDouble("total_expenses");
+        }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return 0.0;
+  }
+
 }

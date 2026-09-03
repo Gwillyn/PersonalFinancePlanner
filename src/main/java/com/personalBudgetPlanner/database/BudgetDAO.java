@@ -7,109 +7,126 @@ import java.sql.SQLException;
 
 public class BudgetDAO {
 
-    private static final String FIND_PLAN_SQL =
-            "SELECT plan_id FROM budget_plans "
-            + "WHERE user_id = ? AND plan_month = ? AND plan_year = ?";
+  private static final String FIND_PLAN_SQL = "SELECT plan_id FROM budget_plans "
+      + "WHERE user_id = ? AND plan_month = ? AND plan_year = ?";
 
-    private static final String INSERT_PLAN_SQL =
-            "INSERT INTO budget_plans "
-            + "(user_id, plan_month, plan_year) "
-            + "VALUES (?, ?, ?)";
+  private static final String INSERT_PLAN_SQL = "INSERT INTO budget_plans "
+      + "(user_id, plan_month, plan_year) "
+      + "VALUES (?, ?, ?)";
 
-    private static final String INSERT_ALLOCATION_SQL =
-            "INSERT INTO budget_allocations "
-            + "(plan_id, category_id, allocated_amount) "
-            + "VALUES (?, ?, ?)";
+  private static final String INSERT_ALLOCATION_SQL = "INSERT INTO budget_allocations "
+      + "(plan_id, category_id, allocated_amount) "
+      + "VALUES (?, ?, ?)";
 
-    public Integer getOrCreateBudgetPlan(int userId,
-                                         int month,
-                                         int year) {
+  public Integer getOrCreateBudgetPlan(int userId,
+      int month,
+      int year) {
 
-        Integer existingPlanId =
-                findBudgetPlanId(userId, month, year);
+    Integer existingPlanId = findBudgetPlanId(userId, month, year);
 
-        if (existingPlanId != null) {
-            return existingPlanId;
-        }
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(
-                             INSERT_PLAN_SQL,
-                             PreparedStatement.RETURN_GENERATED_KEYS
-                     )) {
-
-            statement.setInt(1, userId);
-            statement.setInt(2, month);
-            statement.setInt(3, year);
-
-            int rowsInserted = statement.executeUpdate();
-
-            if (rowsInserted > 0) {
-
-                try (ResultSet generatedKeys =
-                             statement.getGeneratedKeys()) {
-
-                    if (generatedKeys.next()) {
-                        return generatedKeys.getInt(1);
-                    }
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    if (existingPlanId != null) {
+      return existingPlanId;
     }
 
-    public Integer findBudgetPlanId(int userId,
-                                    int month,
-                                    int year) {
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            INSERT_PLAN_SQL,
+            PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(FIND_PLAN_SQL)) {
+      statement.setInt(1, userId);
+      statement.setInt(2, month);
+      statement.setInt(3, year);
 
-            statement.setInt(1, userId);
-            statement.setInt(2, month);
-            statement.setInt(3, year);
+      int rowsInserted = statement.executeUpdate();
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+      if (rowsInserted > 0) {
 
-                if (resultSet.next()) {
-                    return resultSet.getInt("plan_id");
-                }
-            }
+        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+          if (generatedKeys.next()) {
+            return generatedKeys.getInt(1);
+          }
         }
+      }
 
-        return null;
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
 
-    public boolean addBudgetAllocation(int planId,
-                                       int categoryId,
-                                       double allocatedAmount) {
+    return null;
+  }
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(
-                             INSERT_ALLOCATION_SQL
-                     )) {
+  public Integer findBudgetPlanId(int userId,
+      int month,
+      int year) {
 
-            statement.setInt(1, planId);
-            statement.setInt(2, categoryId);
-            statement.setDouble(3, allocatedAmount);
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(FIND_PLAN_SQL)) {
 
-            int rowsInserted = statement.executeUpdate();
+      statement.setInt(1, userId);
+      statement.setInt(2, month);
+      statement.setInt(3, year);
 
-            return rowsInserted > 0;
+      try (ResultSet resultSet = statement.executeQuery()) {
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        if (resultSet.next()) {
+          return resultSet.getInt("plan_id");
         }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
+
+    return null;
+  }
+
+  public boolean addBudgetAllocation(int planId,
+      int categoryId,
+      double allocatedAmount) {
+
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(
+            INSERT_ALLOCATION_SQL)) {
+
+      statement.setInt(1, planId);
+      statement.setInt(2, categoryId);
+      statement.setDouble(3, allocatedAmount);
+
+      int rowsInserted = statement.executeUpdate();
+
+      return rowsInserted > 0;
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public double getTotalBudget(int userId) {
+
+    String sql = "SELECT COALESCE(SUM(ba.allocated_amount), 0) AS total_budget "
+        + "FROM budget_allocations ba "
+        + "JOIN budget_plans bp ON ba.plan_id = bp.plan_id "
+        + "WHERE bp.user_id = ?";
+
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, userId);
+
+      try (ResultSet resultSet = statement.executeQuery()) {
+
+        if (resultSet.next()) {
+          return resultSet.getDouble("total_budget");
+        }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return 0.0;
+  }
+
 }
