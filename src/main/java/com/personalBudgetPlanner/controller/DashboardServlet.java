@@ -2,14 +2,15 @@ package com.personalBudgetPlanner.controller;
 
 import java.io.IOException;
 
-import com.personalBudgetPlanner.database.DashboardDAO;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import com.personalBudgetPlanner.database.BudgetDAO;
+import com.personalBudgetPlanner.database.IncomeDAO;
+import com.personalBudgetPlanner.database.ExpenseDAO;
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -30,13 +31,15 @@ public class DashboardServlet extends HttpServlet {
 
     int userId = (Integer) session.getAttribute("userId");
 
-    DashboardDAO dashboardDAO = new DashboardDAO();
+    IncomeDAO incomeDAO = new IncomeDAO();
+    ExpenseDAO expenseDAO = new ExpenseDAO();
+    BudgetDAO budgetDAO = new BudgetDAO();
 
-    double totalIncome = dashboardDAO.getTotalIncome(userId);
+    double totalIncome = incomeDAO.getTotalIncome(userId);
 
-    double totalExpenses = dashboardDAO.getTotalExpenses(userId);
+    double totalExpenses = expenseDAO.getTotalExpenses(userId);
 
-    double totalBudget = dashboardDAO.getTotalBudget(userId);
+    double totalBudget = budgetDAO.getTotalBudget(userId);
 
     double remainingBalance = totalIncome - totalExpenses;
 
