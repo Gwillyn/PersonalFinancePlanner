@@ -45,6 +45,31 @@ public class ExpenseServlet extends HttpServlet {
             return;
         }
 
+        int userId = (Integer) session.getAttribute("userId");
+
+        String action = request.getParameter("action");
+
+        ExpenseDAO expenseDAO = new ExpenseDAO();
+
+        if ("delete".equalsIgnoreCase(action)) {
+            handleDelete(request, response, userId, expenseDAO);
+            return;
+        }
+
+        if ("edit".equalsIgnoreCase(action)) {
+            handleEdit(request, response, userId, expenseDAO);
+            return;
+        }
+
+        handleAdd(request, response, userId, expenseDAO);
+    }
+
+    private void handleAdd(HttpServletRequest request,
+                           HttpServletResponse response,
+                           int userId,
+                           ExpenseDAO expenseDAO)
+            throws ServletException, IOException {
+
         String expenseName = request.getParameter("expenseName");
         String amount = request.getParameter("amount");
         String frequency = request.getParameter("frequency");
@@ -77,8 +102,6 @@ public class ExpenseServlet extends HttpServlet {
 
             } else {
 
-                int userId = (Integer) session.getAttribute("userId");
-
                 CategoryDAO categoryDAO = new CategoryDAO();
 
                 Integer categoryId =
@@ -96,8 +119,6 @@ public class ExpenseServlet extends HttpServlet {
                     );
 
                 } else {
-
-                    ExpenseDAO expenseDAO = new ExpenseDAO();
 
                     boolean saved =
                             expenseDAO.addExpense(
@@ -130,6 +151,166 @@ public class ExpenseServlet extends HttpServlet {
             request.setAttribute(
                     "errorMessage",
                     "Please enter a valid expense amount."
+            );
+        }
+
+        request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
+               .forward(request, response);
+    }
+
+    private void handleEdit(HttpServletRequest request,
+                            HttpServletResponse response,
+                            int userId,
+                            ExpenseDAO expenseDAO)
+            throws ServletException, IOException {
+
+        String expenseIdValue = request.getParameter("expenseId");
+        String expenseName = request.getParameter("expenseName");
+        String amount = request.getParameter("amount");
+        String frequency = request.getParameter("frequency");
+
+        if (expenseIdValue == null || expenseIdValue.trim().isEmpty()
+                || expenseName == null || expenseName.trim().isEmpty()
+                || amount == null || amount.trim().isEmpty()
+                || frequency == null || frequency.trim().isEmpty()) {
+
+            request.setAttribute(
+                    "errorMessage",
+                    "All expense fields are required."
+            );
+
+            request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
+                   .forward(request, response);
+
+            return;
+        }
+
+        try {
+
+            int expenseId = Integer.parseInt(expenseIdValue);
+            double expenseAmount = Double.parseDouble(amount);
+
+            if (expenseAmount <= 0) {
+
+                request.setAttribute(
+                        "errorMessage",
+                        "Expense amount must be greater than zero."
+                );
+
+                request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
+                       .forward(request, response);
+
+                return;
+            }
+
+            CategoryDAO categoryDAO = new CategoryDAO();
+
+            Integer categoryId =
+                    categoryDAO.getOrCreateCategory(
+                            userId,
+                            "General Expenses",
+                            "EXPENSE"
+                    );
+
+            if (categoryId == null) {
+
+                request.setAttribute(
+                        "errorMessage",
+                        "Expense category could not be found."
+                );
+
+                request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
+                       .forward(request, response);
+
+                return;
+            }
+
+            boolean updated =
+                    expenseDAO.updateExpense(
+                            expenseId,
+                            userId,
+                            categoryId,
+                            expenseName.trim(),
+                            expenseAmount,
+                            frequency
+                    );
+
+            if (updated) {
+
+                response.sendRedirect(
+                        request.getContextPath() + "/expenses"
+                );
+
+                return;
+            }
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Expense could not be updated."
+            );
+
+        } catch (NumberFormatException e) {
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Invalid expense information."
+            );
+        }
+
+        request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
+               .forward(request, response);
+    }
+
+    private void handleDelete(HttpServletRequest request,
+                              HttpServletResponse response,
+                              int userId,
+                              ExpenseDAO expenseDAO)
+            throws ServletException, IOException {
+
+        String expenseIdValue = request.getParameter("expenseId");
+
+        if (expenseIdValue == null || expenseIdValue.trim().isEmpty()) {
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Expense record could not be identified."
+            );
+
+            request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
+                   .forward(request, response);
+
+            return;
+        }
+
+        try {
+
+            int expenseId = Integer.parseInt(expenseIdValue);
+
+            boolean deleted =
+                    expenseDAO.deleteExpense(
+                            expenseId,
+                            userId
+                    );
+
+            if (deleted) {
+
+                response.sendRedirect(
+                        request.getContextPath() + "/expenses"
+                );
+
+                return;
+            }
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Expense could not be deleted."
+            );
+
+        } catch (NumberFormatException e) {
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Invalid expense record."
             );
         }
 
