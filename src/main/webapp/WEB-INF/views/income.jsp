@@ -23,9 +23,15 @@
     <h1 class="title">Income</h1>
 </header>
 
-<div class="container">
+<div class="container" id="entry_container">
 
-    <h2>Manage Income</h2>
+    <h2 class="sub_title">Manage Income</h2>
+
+  <div id="add_button">
+    <button type="button" id="toggleEntry">
+      + Add Income
+    </button>
+  </div>
 
     <% if (request.getAttribute("errorMessage") != null) { %>
         <p style="color: red;">
@@ -38,11 +44,11 @@
             <%= request.getAttribute("successMessage") %>
         </p>
     <% } %>
-
+    
+    <div class="entries" id="entry_form" hidden>
     <form action="${pageContext.request.contextPath}/income"
           method="post">
 
-      <div class="entries">
         <div>
             <label for="incomeName">Income Name:</label>
 
@@ -87,10 +93,61 @@
 
         <button type="submit">Add Income</button>
 
-      </div>
     </form>
+</div>
+</div>
+
+<div class="entry_list">
+  <div class="card entry_card">
+    <h3>Income</h3>
+    <p>number</p>
+    <p>Time type</p>
+
+    <div class="entry_actions">
+      <button type="button">Edit</button>
+      <button type="button">Delete</button>
+    </div>
+
+  </div>
+
+  <div class="card entry_card">
+    <h3>Income</h3>
+    <p>number</p>
+    <p>Time type</p>
+
+    <div class="entry_actions">
+      <button type="button">Edit</button>
+      <button type="button">Delete</button>
+    </div>
+
+  </div>
+  <div class="card entry_card">
+    <h3>Income</h3>
+    <p>number</p>
+    <p>Time type</p>
+
+    <div class="entry_actions">
+      <button type="button">Edit</button>
+      <button type="button">Delete</button>
+    </div>
+
+  </div>
 
 </div>
+
+<script>
+              const toggleButton = document.getElementById("toggleEntry");
+              const entryForm= document.getElementById("entry_form");
+
+              toggleButton.addEventListener("click", function() {
+              const isHidden = entryForm.hidden;
+
+              entryForm.hidden = !isHidden;
+              toggleButton.textContent = isHidden
+                ? "- Hide Income"
+                : "+ Add Income";
+              });
+            </script>
 
 </body>
 

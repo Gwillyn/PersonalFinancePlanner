@@ -19,17 +19,3 @@
 	gap: 20px;
 }
 
-.card {
-	border: 2px solid black; 
-	border-radius: 10px;
-	width: 400px;
-	margin: 20px;
-	padding: 20px;
-	text-align: center;
-	transition: box-shadow 0.1s ease;
-}
-
-.card:hover {
-	box-shadow: 5px 5px;
-	transform: scale(1.01);
-}

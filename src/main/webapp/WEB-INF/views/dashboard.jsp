@@ -36,7 +36,7 @@
 
 <div class="dash_container">
 
-    <div class="card"
+    <div class="card dash_card"
          onclick="window.location.href='${pageContext.request.contextPath}/income'"
          style="cursor: pointer;">
 
@@ -49,7 +49,7 @@
 
     </div>
 
-    <div class="card"
+    <div class="card dash_card"
          onclick="window.location.href='${pageContext.request.contextPath}/expenses'"
          style="cursor: pointer;">
 
@@ -62,7 +62,7 @@
 
     </div>
 
-    <div class="card"
+    <div class="card dash_card"
          onclick="window.location.href='${pageContext.request.contextPath}/budget'"
          style="cursor: pointer;">
 
@@ -75,7 +75,7 @@
 
     </div>
 
-    <div class="card">
+    <div class="card dash_card">
 
         <h2>Remaining Balance</h2>
 
@@ -86,7 +86,7 @@
 
     </div>
 
-    <div class="card"
+    <div class="card dash_card"
          onclick="window.location.href='${pageContext.request.contextPath}/profile'"
          style="cursor: pointer;">
 
