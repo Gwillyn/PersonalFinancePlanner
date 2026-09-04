@@ -28,6 +28,12 @@ public class IncomeServlet extends HttpServlet {
             return;
         }
 
+        int userId = (Integer) session.getAttribute("userId");
+
+        IncomeDAO incomeDAO = new IncomeDAO();
+
+        loadIncomeList(request, userId, incomeDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                .forward(request, response);
     }
@@ -82,6 +88,8 @@ public class IncomeServlet extends HttpServlet {
                     "All income fields are required."
             );
 
+            loadIncomeList(request, userId, incomeDAO);
+
             request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                    .forward(request, response);
 
@@ -133,6 +141,8 @@ public class IncomeServlet extends HttpServlet {
             );
         }
 
+        loadIncomeList(request, userId, incomeDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                .forward(request, response);
     }
@@ -158,6 +168,8 @@ public class IncomeServlet extends HttpServlet {
                     "All income fields are required."
             );
 
+            loadIncomeList(request, userId, incomeDAO);
+
             request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                    .forward(request, response);
 
@@ -175,6 +187,8 @@ public class IncomeServlet extends HttpServlet {
                         "errorMessage",
                         "Income amount must be greater than zero."
                 );
+
+                loadIncomeList(request, userId, incomeDAO);
 
                 request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                        .forward(request, response);
@@ -212,6 +226,8 @@ public class IncomeServlet extends HttpServlet {
             );
         }
 
+        loadIncomeList(request, userId, incomeDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                .forward(request, response);
     }
@@ -230,6 +246,8 @@ public class IncomeServlet extends HttpServlet {
                     "errorMessage",
                     "Income record could not be identified."
             );
+
+            loadIncomeList(request, userId, incomeDAO);
 
             request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                    .forward(request, response);
@@ -268,7 +286,19 @@ public class IncomeServlet extends HttpServlet {
             );
         }
 
+        loadIncomeList(request, userId, incomeDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/income.jsp")
                .forward(request, response);
+    }
+
+    private void loadIncomeList(HttpServletRequest request,
+                                int userId,
+                                IncomeDAO incomeDAO) {
+
+        request.setAttribute(
+                "incomeList",
+                incomeDAO.getActiveIncomes(userId)
+        );
     }
 }

@@ -29,6 +29,12 @@ public class ExpenseServlet extends HttpServlet {
             return;
         }
 
+        int userId = (Integer) session.getAttribute("userId");
+
+        ExpenseDAO expenseDAO = new ExpenseDAO();
+
+        loadExpenseList(request, userId, expenseDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                .forward(request, response);
     }
@@ -83,6 +89,8 @@ public class ExpenseServlet extends HttpServlet {
                     "All expense fields are required."
             );
 
+            loadExpenseList(request, userId, expenseDAO);
+
             request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                    .forward(request, response);
 
@@ -131,10 +139,11 @@ public class ExpenseServlet extends HttpServlet {
 
                     if (saved) {
 
-                        request.setAttribute(
-                                "successMessage",
-                                "Expense was saved successfully."
+                        response.sendRedirect(
+                                request.getContextPath() + "/expenses"
                         );
+
+                        return;
 
                     } else {
 
@@ -153,6 +162,8 @@ public class ExpenseServlet extends HttpServlet {
                     "Please enter a valid expense amount."
             );
         }
+
+        loadExpenseList(request, userId, expenseDAO);
 
         request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                .forward(request, response);
@@ -179,6 +190,8 @@ public class ExpenseServlet extends HttpServlet {
                     "All expense fields are required."
             );
 
+            loadExpenseList(request, userId, expenseDAO);
+
             request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                    .forward(request, response);
 
@@ -196,6 +209,8 @@ public class ExpenseServlet extends HttpServlet {
                         "errorMessage",
                         "Expense amount must be greater than zero."
                 );
+
+                loadExpenseList(request, userId, expenseDAO);
 
                 request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                        .forward(request, response);
@@ -218,6 +233,8 @@ public class ExpenseServlet extends HttpServlet {
                         "errorMessage",
                         "Expense category could not be found."
                 );
+
+                loadExpenseList(request, userId, expenseDAO);
 
                 request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                        .forward(request, response);
@@ -257,6 +274,8 @@ public class ExpenseServlet extends HttpServlet {
             );
         }
 
+        loadExpenseList(request, userId, expenseDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                .forward(request, response);
     }
@@ -275,6 +294,8 @@ public class ExpenseServlet extends HttpServlet {
                     "errorMessage",
                     "Expense record could not be identified."
             );
+
+            loadExpenseList(request, userId, expenseDAO);
 
             request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                    .forward(request, response);
@@ -314,7 +335,19 @@ public class ExpenseServlet extends HttpServlet {
             );
         }
 
+        loadExpenseList(request, userId, expenseDAO);
+
         request.getRequestDispatcher("/WEB-INF/views/expenses.jsp")
                .forward(request, response);
+    }
+
+    private void loadExpenseList(HttpServletRequest request,
+                                 int userId,
+                                 ExpenseDAO expenseDAO) {
+
+        request.setAttribute(
+                "expenseList",
+                expenseDAO.getActiveExpenses(userId)
+        );
     }
 }
