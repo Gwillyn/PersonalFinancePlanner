@@ -12,169 +12,182 @@ import java.util.Map;
 
 public class IncomeDAO {
 
-    private static final String INSERT_INCOME_SQL =
-            "INSERT INTO income_sources "
-            + "(user_id, income_name, amount, payment_frequency) "
-            + "VALUES (?, ?, ?, ?)";
+  private static final String INSERT_INCOME_SQL = "INSERT INTO income_sources "
+      + "(user_id, income_name, amount, payment_frequency) "
+      + "VALUES (?, ?, ?, ?)";
 
-    public boolean addIncome(int userId,
-                             String incomeName,
-                             double amount,
-                             String paymentFrequency) {
+  public boolean addIncome(int userId,
+      String incomeName,
+      double amount,
+      String paymentFrequency) {
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(INSERT_INCOME_SQL)) {
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(INSERT_INCOME_SQL)) {
 
-            statement.setInt(1, userId);
-            statement.setString(2, incomeName);
-            statement.setDouble(3, amount);
-            statement.setString(4, paymentFrequency);
+      statement.setInt(1, userId);
+      statement.setString(2, incomeName);
+      statement.setDouble(3, amount);
+      statement.setString(4, paymentFrequency);
 
-            int rowsInserted = statement.executeUpdate();
+      int rowsInserted = statement.executeUpdate();
 
-            return rowsInserted > 0;
+      return rowsInserted > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  public List<Map<String, Object>> getActiveIncomes(int userId) {
+
+    List<Map<String, Object>> incomes = new ArrayList<>();
+
+    String sql = "SELECT income_id, income_name, amount, payment_frequency "
+        + "FROM income_sources "
+        + "WHERE user_id = ? AND is_active = TRUE "
+        + "ORDER BY income_id DESC";
+
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
+
+      statement.setInt(1, userId);
+
+      try (ResultSet resultSet = statement.executeQuery()) {
+
+        while (resultSet.next()) {
+
+          Map<String, Object> income = new HashMap<>();
+
+          income.put(
+              "incomeId",
+              resultSet.getInt("income_id"));
+
+          income.put(
+              "incomeName",
+              resultSet.getString("income_name"));
+
+          income.put(
+              "amount",
+              resultSet.getDouble("amount"));
+
+          income.put(
+              "frequency",
+              resultSet.getString("payment_frequency"));
+
+          incomes.add(income);
         }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
 
-    public List<Map<String, Object>> getActiveIncomes(int userId) {
+    return incomes;
+  }
 
-        List<Map<String, Object>> incomes = new ArrayList<>();
+  public double getMonthlyIncome(int userId) {
+    double monthlyIncome = 0.0;
+    List<Map<String, Object>> incomes = getActiveIncomes(userId);
 
-        String sql =
-                "SELECT income_id, income_name, amount, payment_frequency "
-                + "FROM income_sources "
-                + "WHERE user_id = ? AND is_active = TRUE "
-                + "ORDER BY income_id DESC";
+    for (int i = 0; i < incomes.size(); i++) {
+      Map<String, Object> income = incomes.get(i);
+      double amount = (Double) income.get("amount");
+      String frequency = (String) income.get("frequency");
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+      switch (frequency) {
+        case "weekly":
+          monthlyIncome += amount * 52 / 12;
+          break;
+        case "Biweekly":
+          monthlyIncome += amount * 26 / 12;
+          break;
+        case "Monthly":
+          monthlyIncome += amount;
+          break;
+        case "Yearly":
+          monthlyIncome += amount / 12;
+          break;
+      }
+    }
+    return monthlyIncome;
+  }
 
-            statement.setInt(1, userId);
+  public double getTotalIncome(int userId) {
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+    String sql = "SELECT COALESCE(SUM(amount), 0) AS total_income "
+        + "FROM income_sources "
+        + "WHERE user_id = ? AND is_active = TRUE";
 
-                while (resultSet.next()) {
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                    Map<String, Object> income = new HashMap<>();
+      statement.setInt(1, userId);
 
-                    income.put(
-                            "incomeId",
-                            resultSet.getInt("income_id")
-                    );
+      try (ResultSet resultSet = statement.executeQuery()) {
 
-                    income.put(
-                            "incomeName",
-                            resultSet.getString("income_name")
-                    );
-
-                    income.put(
-                            "amount",
-                            resultSet.getDouble("amount")
-                    );
-
-                    income.put(
-                            "frequency",
-                            resultSet.getString("payment_frequency")
-                    );
-
-                    incomes.add(income);
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (resultSet.next()) {
+          return resultSet.getDouble("total_income");
         }
+      }
 
-        return incomes;
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
 
-    public double getTotalIncome(int userId) {
+    return 0.0;
+  }
 
-        String sql =
-                "SELECT COALESCE(SUM(amount), 0) AS total_income "
-                + "FROM income_sources "
-                + "WHERE user_id = ? AND is_active = TRUE";
+  public boolean updateIncome(int incomeId,
+      int userId,
+      String incomeName,
+      double amount,
+      String paymentFrequency) {
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+    String sql = "UPDATE income_sources "
+        + "SET income_name = ?, amount = ?, payment_frequency = ? "
+        + "WHERE income_id = ? "
+        + "AND user_id = ? "
+        + "AND is_active = TRUE";
 
-            statement.setInt(1, userId);
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+      statement.setString(1, incomeName);
+      statement.setDouble(2, amount);
+      statement.setString(3, paymentFrequency);
+      statement.setInt(4, incomeId);
+      statement.setInt(5, userId);
 
-                if (resultSet.next()) {
-                    return resultSet.getDouble("total_income");
-                }
-            }
+      int rowsUpdated = statement.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+      return rowsUpdated > 0;
 
-        return 0.0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
+  }
 
-    public boolean updateIncome(int incomeId,
-                                int userId,
-                                String incomeName,
-                                double amount,
-                                String paymentFrequency) {
+  public boolean deleteIncome(int incomeId, int userId) {
 
-        String sql =
-                "UPDATE income_sources "
-                + "SET income_name = ?, amount = ?, payment_frequency = ? "
-                + "WHERE income_id = ? "
-                + "AND user_id = ? "
-                + "AND is_active = TRUE";
+    String sql = "UPDATE income_sources "
+        + "SET is_active = FALSE "
+        + "WHERE income_id = ? AND user_id = ?";
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+    try (Connection connection = DBConnection.getConnection();
+        PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, incomeName);
-            statement.setDouble(2, amount);
-            statement.setString(3, paymentFrequency);
-            statement.setInt(4, incomeId);
-            statement.setInt(5, userId);
+      statement.setInt(1, incomeId);
+      statement.setInt(2, userId);
 
-            int rowsUpdated = statement.executeUpdate();
+      int rowsUpdated = statement.executeUpdate();
 
-            return rowsUpdated > 0;
+      return rowsUpdated > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
-
-    public boolean deleteIncome(int incomeId, int userId) {
-
-        String sql =
-                "UPDATE income_sources "
-                + "SET is_active = FALSE "
-                + "WHERE income_id = ? AND user_id = ?";
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
-
-            statement.setInt(1, incomeId);
-            statement.setInt(2, userId);
-
-            int rowsUpdated = statement.executeUpdate();
-
-            return rowsUpdated > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+  }
 }
