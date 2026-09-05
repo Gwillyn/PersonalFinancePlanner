@@ -52,14 +52,11 @@
 
       <div class="entries">
         <div>
-            <label for="monthlyIncome">Monthly Income:</label>
+          <p>
+            Monthly Income:
+            $<%= String.format("%.2f", (Double) request.getAttribute("monthlyIncome")) %>
+          </p>
 
-            <input type="number"
-                   id="monthlyIncome"
-                   name="monthlyIncome"
-                   step="0.01"
-                   min="0"
-                   required>
         </div>
 
         <br>
