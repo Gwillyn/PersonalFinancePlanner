@@ -96,7 +96,7 @@ public class IncomeDAO {
       String frequency = (String) income.get("frequency");
 
       switch (frequency) {
-        case "weekly":
+        case "Weekly":
           monthlyIncome += amount * 52 / 12;
           break;
         case "Biweekly":
