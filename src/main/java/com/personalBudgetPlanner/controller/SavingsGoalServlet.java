@@ -29,6 +29,15 @@ public class SavingsGoalServlet extends HttpServlet {
             return;
         }
 
+        int userId = (Integer) session.getAttribute("userId");
+
+        SavingsGoalDAO savingsGoalDAO = new SavingsGoalDAO();
+
+        request.setAttribute(
+                "savingsGoals",
+                savingsGoalDAO.getSavingsGoalsByUserId(userId)
+        );
+
         request.getRequestDispatcher("/WEB-INF/views/savings.jsp")
                .forward(request, response);
     }
@@ -64,9 +73,7 @@ public class SavingsGoalServlet extends HttpServlet {
                     "All savings goal fields are required."
             );
 
-            request.getRequestDispatcher("/WEB-INF/views/savings.jsp")
-                   .forward(request, response);
-
+            loadGoalsAndForward(request, response, session);
             return;
         }
 
@@ -140,6 +147,25 @@ public class SavingsGoalServlet extends HttpServlet {
                     "Please enter a valid target date."
             );
         }
+
+        loadGoalsAndForward(request, response, session);
+    }
+
+    private void loadGoalsAndForward(HttpServletRequest request,
+                                     HttpServletResponse response,
+                                     HttpSession session)
+            throws ServletException, IOException {
+
+        int userId =
+                (Integer) session.getAttribute("userId");
+
+        SavingsGoalDAO savingsGoalDAO =
+                new SavingsGoalDAO();
+
+        request.setAttribute(
+                "savingsGoals",
+                savingsGoalDAO.getSavingsGoalsByUserId(userId)
+        );
 
         request.getRequestDispatcher("/WEB-INF/views/savings.jsp")
                .forward(request, response);
