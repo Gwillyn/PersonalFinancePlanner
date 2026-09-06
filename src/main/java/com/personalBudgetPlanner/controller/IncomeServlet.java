@@ -14,291 +14,274 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/income")
 public class IncomeServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+  @Override
+  protected void doGet(HttpServletRequest request,
+      HttpServletResponse response)
+      throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
+    HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
-        int userId = (Integer) session.getAttribute("userId");
-
-        IncomeDAO incomeDAO = new IncomeDAO();
-
-        loadIncomeList(request, userId, incomeDAO);
-
-        request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-               .forward(request, response);
+    if (session == null || session.getAttribute("userId") == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
+    int userId = (Integer) session.getAttribute("userId");
 
-        HttpSession session = request.getSession(false);
+    IncomeDAO incomeDAO = new IncomeDAO();
 
-        if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+    loadIncomeList(request, userId, incomeDAO);
 
-        int userId = (Integer) session.getAttribute("userId");
+    request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+        .forward(request, response);
+  }
 
-        String action = request.getParameter("action");
+  @Override
+  protected void doPost(HttpServletRequest request,
+      HttpServletResponse response)
+      throws ServletException, IOException {
 
-        IncomeDAO incomeDAO = new IncomeDAO();
+    HttpSession session = request.getSession(false);
 
-        if ("delete".equalsIgnoreCase(action)) {
-            handleDelete(request, response, userId, incomeDAO);
-            return;
-        }
-
-        if ("edit".equalsIgnoreCase(action)) {
-            handleEdit(request, response, userId, incomeDAO);
-            return;
-        }
-
-        handleAdd(request, response, userId, incomeDAO);
+    if (session == null || session.getAttribute("userId") == null) {
+      response.sendRedirect(request.getContextPath() + "/login");
+      return;
     }
 
-    private void handleAdd(HttpServletRequest request,
-                           HttpServletResponse response,
-                           int userId,
-                           IncomeDAO incomeDAO)
-            throws ServletException, IOException {
+    int userId = (Integer) session.getAttribute("userId");
 
-        String incomeName = request.getParameter("incomeName");
-        String amount = request.getParameter("amount");
-        String frequency = request.getParameter("frequency");
+    String action = request.getParameter("action");
 
-        if (incomeName == null || incomeName.trim().isEmpty()
-                || amount == null || amount.trim().isEmpty()
-                || frequency == null || frequency.trim().isEmpty()) {
+    IncomeDAO incomeDAO = new IncomeDAO();
 
-            request.setAttribute(
-                    "errorMessage",
-                    "All income fields are required."
-            );
-
-            loadIncomeList(request, userId, incomeDAO);
-
-            request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-                   .forward(request, response);
-
-            return;
-        }
-
-        try {
-
-            double incomeAmount = Double.parseDouble(amount);
-
-            if (incomeAmount <= 0) {
-
-                request.setAttribute(
-                        "errorMessage",
-                        "Income amount must be greater than zero."
-                );
-
-            } else {
-
-                boolean saved = incomeDAO.addIncome(
-                        userId,
-                        incomeName.trim(),
-                        incomeAmount,
-                        frequency
-                );
-
-                if (saved) {
-
-                    response.sendRedirect(
-                            request.getContextPath() + "/dashboard"
-                    );
-
-                    return;
-
-                } else {
-
-                    request.setAttribute(
-                            "errorMessage",
-                            "Income could not be saved."
-                    );
-                }
-            }
-
-        } catch (NumberFormatException e) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Please enter a valid income amount."
-            );
-        }
-
-        loadIncomeList(request, userId, incomeDAO);
-
-        request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-               .forward(request, response);
+    if ("delete".equalsIgnoreCase(action)) {
+      handleDelete(request, response, userId, incomeDAO);
+      return;
     }
 
-    private void handleEdit(HttpServletRequest request,
-                            HttpServletResponse response,
-                            int userId,
-                            IncomeDAO incomeDAO)
-            throws ServletException, IOException {
-
-        String incomeIdValue = request.getParameter("incomeId");
-        String incomeName = request.getParameter("incomeName");
-        String amount = request.getParameter("amount");
-        String frequency = request.getParameter("frequency");
-
-        if (incomeIdValue == null || incomeIdValue.trim().isEmpty()
-                || incomeName == null || incomeName.trim().isEmpty()
-                || amount == null || amount.trim().isEmpty()
-                || frequency == null || frequency.trim().isEmpty()) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "All income fields are required."
-            );
-
-            loadIncomeList(request, userId, incomeDAO);
-
-            request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-                   .forward(request, response);
-
-            return;
-        }
-
-        try {
-
-            int incomeId = Integer.parseInt(incomeIdValue);
-            double incomeAmount = Double.parseDouble(amount);
-
-            if (incomeAmount <= 0) {
-
-                request.setAttribute(
-                        "errorMessage",
-                        "Income amount must be greater than zero."
-                );
-
-                loadIncomeList(request, userId, incomeDAO);
-
-                request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-                       .forward(request, response);
-
-                return;
-            }
-
-            boolean updated = incomeDAO.updateIncome(
-                    incomeId,
-                    userId,
-                    incomeName.trim(),
-                    incomeAmount,
-                    frequency
-            );
-
-            if (updated) {
-
-                response.sendRedirect(
-                        request.getContextPath() + "/income"
-                );
-
-                return;
-            }
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Income could not be updated."
-            );
-
-        } catch (NumberFormatException e) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Invalid income information."
-            );
-        }
-
-        loadIncomeList(request, userId, incomeDAO);
-
-        request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-               .forward(request, response);
+    if ("edit".equalsIgnoreCase(action)) {
+      handleEdit(request, response, userId, incomeDAO);
+      return;
     }
 
-    private void handleDelete(HttpServletRequest request,
-                              HttpServletResponse response,
-                              int userId,
-                              IncomeDAO incomeDAO)
-            throws ServletException, IOException {
+    handleAdd(request, response, userId, incomeDAO);
+  }
 
-        String incomeIdValue = request.getParameter("incomeId");
+  private void handleAdd(HttpServletRequest request,
+      HttpServletResponse response,
+      int userId,
+      IncomeDAO incomeDAO)
+      throws ServletException, IOException {
 
-        if (incomeIdValue == null || incomeIdValue.trim().isEmpty()) {
+    String incomeName = request.getParameter("incomeName");
+    String amount = request.getParameter("amount");
+    String frequency = request.getParameter("frequency");
 
-            request.setAttribute(
-                    "errorMessage",
-                    "Income record could not be identified."
-            );
+    if (incomeName == null || incomeName.trim().isEmpty()
+        || amount == null || amount.trim().isEmpty()
+        || frequency == null || frequency.trim().isEmpty()) {
 
-            loadIncomeList(request, userId, incomeDAO);
+      request.setAttribute(
+          "errorMessage",
+          "All income fields are required.");
 
-            request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-                   .forward(request, response);
+      loadIncomeList(request, userId, incomeDAO);
 
-            return;
-        }
+      request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+          .forward(request, response);
 
-        try {
-
-            int incomeId = Integer.parseInt(incomeIdValue);
-
-            boolean deleted = incomeDAO.deleteIncome(
-                    incomeId,
-                    userId
-            );
-
-            if (deleted) {
-
-                response.sendRedirect(
-                        request.getContextPath() + "/income"
-                );
-
-                return;
-            }
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Income could not be deleted."
-            );
-
-        } catch (NumberFormatException e) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Invalid income record."
-            );
-        }
-
-        loadIncomeList(request, userId, incomeDAO);
-
-        request.getRequestDispatcher("/WEB-INF/views/income.jsp")
-               .forward(request, response);
+      return;
     }
 
-    private void loadIncomeList(HttpServletRequest request,
-                                int userId,
-                                IncomeDAO incomeDAO) {
+    try {
+
+      double incomeAmount = Double.parseDouble(amount);
+
+      if (incomeAmount <= 0) {
 
         request.setAttribute(
-                "incomeList",
-                incomeDAO.getActiveIncomes(userId)
-        );
+            "errorMessage",
+            "Income amount must be greater than zero.");
+
+      } else {
+
+        boolean saved = incomeDAO.addIncome(
+            userId,
+            incomeName.trim(),
+            incomeAmount,
+            frequency);
+
+        if (saved) {
+
+          response.sendRedirect(
+              request.getContextPath() + "/dashboard");
+
+          return;
+
+        } else {
+
+          request.setAttribute(
+              "errorMessage",
+              "Income could not be saved.");
+        }
+      }
+
+    } catch (NumberFormatException e) {
+
+      request.setAttribute(
+          "errorMessage",
+          "Please enter a valid income amount.");
     }
+
+    loadIncomeList(request, userId, incomeDAO);
+
+    request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+        .forward(request, response);
+  }
+
+  private void handleEdit(HttpServletRequest request,
+      HttpServletResponse response,
+      int userId,
+      IncomeDAO incomeDAO)
+      throws ServletException, IOException {
+
+    String incomeIdValue = request.getParameter("incomeId");
+    String incomeName = request.getParameter("incomeName");
+    String amount = request.getParameter("amount");
+    String frequency = request.getParameter("frequency");
+
+    if (incomeIdValue == null || incomeIdValue.trim().isEmpty()
+        || incomeName == null || incomeName.trim().isEmpty()
+        || amount == null || amount.trim().isEmpty()
+        || frequency == null || frequency.trim().isEmpty()) {
+
+      request.setAttribute(
+          "errorMessage",
+          "All income fields are required.");
+
+      loadIncomeList(request, userId, incomeDAO);
+
+      request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+          .forward(request, response);
+
+      return;
+    }
+
+    try {
+
+      int incomeId = Integer.parseInt(incomeIdValue);
+      double incomeAmount = Double.parseDouble(amount);
+
+      if (incomeAmount <= 0) {
+
+        request.setAttribute(
+            "errorMessage",
+            "Income amount must be greater than zero.");
+
+        loadIncomeList(request, userId, incomeDAO);
+
+        request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+            .forward(request, response);
+
+        return;
+      }
+
+      boolean updated = incomeDAO.updateIncome(
+          incomeId,
+          userId,
+          incomeName.trim(),
+          incomeAmount,
+          frequency);
+
+      if (updated) {
+
+        response.sendRedirect(
+            request.getContextPath() + "/income");
+
+        return;
+      }
+
+      request.setAttribute(
+          "errorMessage",
+          "Income could not be updated.");
+
+    } catch (NumberFormatException e) {
+
+      request.setAttribute(
+          "errorMessage",
+          "Invalid income information.");
+    }
+
+    loadIncomeList(request, userId, incomeDAO);
+
+    request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+        .forward(request, response);
+  }
+
+  private void handleDelete(HttpServletRequest request,
+      HttpServletResponse response,
+      int userId,
+      IncomeDAO incomeDAO)
+      throws ServletException, IOException {
+
+    String incomeIdValue = request.getParameter("incomeId");
+
+    if (incomeIdValue == null || incomeIdValue.trim().isEmpty()) {
+
+      request.setAttribute(
+          "errorMessage",
+          "Income record could not be identified.");
+
+      loadIncomeList(request, userId, incomeDAO);
+
+      request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+          .forward(request, response);
+
+      return;
+    }
+
+    try {
+
+      int incomeId = Integer.parseInt(incomeIdValue);
+
+      boolean deleted = incomeDAO.deleteIncome(
+          incomeId,
+          userId);
+
+      if (deleted) {
+
+        response.sendRedirect(
+            request.getContextPath() + "/income");
+
+        return;
+      }
+
+      request.setAttribute(
+          "errorMessage",
+          "Income could not be deleted.");
+
+    } catch (NumberFormatException e) {
+
+      request.setAttribute(
+          "errorMessage",
+          "Invalid income record.");
+    }
+
+    loadIncomeList(request, userId, incomeDAO);
+
+    request.getRequestDispatcher("/WEB-INF/views/income.jsp")
+        .forward(request, response);
+  }
+
+  private void loadIncomeList(HttpServletRequest request,
+      int userId,
+      IncomeDAO incomeDAO) {
+
+    request.setAttribute(
+        "incomeList",
+        incomeDAO.getActiveIncomes(userId));
+  }
+
 }
