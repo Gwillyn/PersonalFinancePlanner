@@ -15,7 +15,7 @@
 }
 
 .dash_card:hover {
-	box-shadow: 5px 5px;
+  box-shadow: 5px 5px;
 	transform: scale(1.01);
 }
 
