@@ -36,11 +36,11 @@
 
 <div class="dash_container">
 
-    <div class="card dash_card"
+    <div class="card dash_card entry_card"
          onclick="window.location.href='${pageContext.request.contextPath}/income'"
          style="cursor: pointer;">
 
-        <h2>Income</h2>
+        <h2>Monthly Income</h2>
 
         <p>
             $<%= String.format("%.2f",
@@ -49,11 +49,11 @@
 
     </div>
 
-    <div class="card dash_card"
+    <div class="card dash_card entry_card"
          onclick="window.location.href='${pageContext.request.contextPath}/expenses'"
          style="cursor: pointer;">
 
-        <h2>Expenses</h2>
+        <h2>Monthly Expenses</h2>
 
         <p>
             $<%= String.format("%.2f",
@@ -62,7 +62,7 @@
 
     </div>
 
-    <div class="card dash_card"
+    <div class="card dash_card entry_card"
          onclick="window.location.href='${pageContext.request.contextPath}/budget'"
          style="cursor: pointer;">
 
@@ -75,7 +75,7 @@
 
     </div>
 
-    <div class="card dash_card">
+    <div class="card dash_card entry_card">
 
         <h2>Remaining Balance</h2>
 
@@ -86,7 +86,7 @@
 
     </div>
 
-    <div class="card dash_card"
+    <div class="card dash_card entry_card"
          onclick="window.location.href='${pageContext.request.contextPath}/profile'"
          style="cursor: pointer;">
 
