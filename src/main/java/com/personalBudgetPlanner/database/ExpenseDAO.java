@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +37,10 @@ public class ExpenseDAO {
             return rowsInserted > 0;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
             return false;
+
         }
     }
 
@@ -95,10 +96,47 @@ public class ExpenseDAO {
             }
 
         } catch (SQLException e) {
+
             e.printStackTrace();
         }
 
         return expenses;
+    }
+
+    public double getMonthlyExpenses(int userId) {
+
+        double monthlyExpenses = 0.0;
+
+        List<Map<String, Object>> expenses = getActiveExpenses(userId);
+
+        for (int i = 0; i < expenses.size(); i++) {
+
+            Map<String, Object> expense = expenses.get(i);
+
+            double amount = (Double) expense.get("amount");
+            String frequency = (String) expense.get("frequency");
+
+            switch (frequency) {
+
+                case "Weekly":
+                    monthlyExpenses += amount * 52 / 12;
+                    break;
+
+                case "Biweekly":
+                    monthlyExpenses += amount * 26 / 12;
+                    break;
+
+                case "Monthly":
+                    monthlyExpenses += amount;
+                    break;
+
+                case "Yearly":
+                    monthlyExpenses += amount / 12;
+                    break;
+            }
+        }
+
+        return monthlyExpenses;
     }
 
     public double getTotalExpenses(int userId) {
@@ -117,11 +155,13 @@ public class ExpenseDAO {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {
+
                     return resultSet.getDouble("total_expenses");
                 }
             }
 
         } catch (SQLException e) {
+
             e.printStackTrace();
         }
 
@@ -159,8 +199,10 @@ public class ExpenseDAO {
             return rowsUpdated > 0;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
             return false;
+
         }
     }
 
@@ -183,8 +225,10 @@ public class ExpenseDAO {
             return rowsUpdated > 0;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
             return false;
+
         }
     }
 }
