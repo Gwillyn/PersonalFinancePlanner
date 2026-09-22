@@ -35,7 +35,7 @@ public class DashboardServlet extends HttpServlet {
     ExpenseDAO expenseDAO = new ExpenseDAO();
     BudgetDAO budgetDAO = new BudgetDAO();
 
-    double totalIncome = incomeDAO.getTotalIncome(userId);
+    double totalIncome = incomeDAO.getMonthlyIncome(userId);
 
     double totalExpenses = expenseDAO.getTotalExpenses(userId);
 
