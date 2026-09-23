@@ -34,6 +34,9 @@
 
 </header>
 
+<div class="dash_container heading">
+  <h1>Personal Finances</h1>
+</div>
 <div class="dash_container income-expense-container">
 
     <div class="card dash_card entry_card"
@@ -64,6 +67,9 @@
 </div>
 
 
+<div class="dash_container heading">
+  <h1>Budgeting</h1>
+</div>
 <div class="dash_container budget-section">
     <div class="card dash_card entry_card"
          onclick="window.location.href='${pageContext.request.contextPath}/budget'"
