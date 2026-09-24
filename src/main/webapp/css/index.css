@@ -1,36 +1,154 @@
 @charset "UTF-8";
 
 .title {
-	padding: 20px;
-	font-size: 60px;
-	text-align: center;
-	margin-bottom: 100px;
-	margin-top: 100px;
+  padding: 20px 5%;
+  padding-bottom: 0px;
+  margin: 0;
+  font-size: 50px;
+  text-align: left;
 }
 
-.logo {
-	visibility: hidden;
+.description {
+  padding: 30px 5%;
+  padding-top: 10px;
+  margin: 0;
+  font-size: 20px;
+  text-align: left;
 }
 
-.dash_container {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	gap: 20px;
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px;
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto 30px;
+}
+
+.heading h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.card {
   border: 2px solid var(--nav-blue);
-  padding: 20px;
-  margin-left: 10%;
-  margin-right: 10%;
-  margin-bottom: 30px;
-  box-shadow: 5px 5px var(--nav-blue); 
-  background: var(--window-gray);
+  border-radius: 0;
+  background: white;
+  box-shadow: 5px 5px var(--nav-blue);
+  cursor: pointer;
 }
 
-.heading {
-  border-left: 4px solid var(--nav-blue);
-  width: 40%;
-  box-shadow:0px 0px;
-  margin-bottom:0px;
-  border-bottom: 0px;
+.dash_card {
+  flex: 1 1 300px;
+  min-height: 150px;
+  margin: 0;
+  padding-bottom: 24px;
 }
 
+.dash_card h2 {
+  margin: 0 0 26px;
+  padding: 12px 16px;
+  background: var(--nav-blue);
+  color: white;
+  font-size: 20px;
+  text-align: left;
+}
+
+.dash_card p {
+  margin: 0;
+  font-size: 42px;
+  font-weight: bold;
+}
+
+.entry_card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.entry_card:hover {
+  background: #e7f1f8;
+  box-shadow: 8px 8px var(--nav-blue);
+  transform: translate(-2px, -2px);
+}
+
+.summary-grid .card,
+.budget-section .card {
+  width: auto;
+  margin: 0;
+}
+
+.budget-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+  width: 90%;
+  max-width: 1400px;
+  margin: 34px auto;
+  padding: 28px;
+}
+
+.budget-grid .card {
+  width: auto;
+  margin: 0;
+}
+
+.card-body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 24px 0;
+}
+
+.card-icon {
+  display: grid;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 2px solid var(--nav-blue);
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.income-icon {
+  background: #dff3e4;
+  color: #25834f;
+  border-color: #25834f;
+}
+
+.expense-icon {
+  background: #fbdede;
+  color: #c83232;
+  border-color: #c83232;
+}
+
+.card-value {
+  margin: 0 !important;
+  font-size: 38px !important;
+}
+
+@media (max-width: 700px) {
+  .budget-grid {
+    grid-template-columns: 1fr;
+  }
+  .title {
+  font-size: 36px;
+  }
+
+  .dash_container,
+  .heading {
+    width: 86%;
+  }
+
+  .summary-grid,
+  .budget-section {
+    grid-template-columns: 1fr;
+  }
+
+  .dash_card {
+    flex-basis: 100%;
+  }
+
+  .dash_card p {
+    font-size: 34px;
+  }
+}

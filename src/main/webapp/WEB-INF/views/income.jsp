@@ -27,7 +27,7 @@
 
 </header>
 
-<div class="container" id="entry_container">
+<div class="container">
 
     <h2 class="sub_title">Manage Income</h2>
 
