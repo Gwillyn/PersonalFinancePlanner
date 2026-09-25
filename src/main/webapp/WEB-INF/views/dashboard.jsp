@@ -25,7 +25,14 @@
           onclick="window.location.href='${pageContext.request.contextPath}/income'">
         <h2>Monthly Income</h2>
         <div class="card-body">
-          <span class="card-icon income-icon">↑</span>
+           <span class="card-icon income-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 19V5"/>
+                <path d="M6 11l6-6 6 6"/>
+            </svg>
+          </span>          
           <p class="card-value">
               $<%= String.format("%.2f",
                   (Double) request.getAttribute("totalIncome")) %>
@@ -37,7 +44,14 @@
           onclick="window.location.href='${pageContext.request.contextPath}/expenses'">
         <h2>Monthly Expenses</h2>
         <div class="card-body">
-          <span class="card-icon expense-icon">↓</span>
+          <span class="card-icon expense-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14"/>
+                  <path d="M6 13l6 6 6-6"/>
+              </svg>
+          </span>  
           <p class="card-value">
               $<%= String.format("%.2f",
                   (Double) request.getAttribute("totalExpenses")) %>
@@ -48,18 +62,39 @@
     <div class="card dash_card entry_card"
           onclick="window.location.href='${pageContext.request.contextPath}/budget'">
         <h2>Budget</h2>
-        <p>
+        <div class="card-body">
+          <span class="card-icon budget-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h15a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6z"/>
+                <path d="M4 6V4a2 2 0 0 1 2-2h12"/>
+                <path d="M16 13h5"/>
+                <circle cx="16" cy="13" r="1"/>
+            </svg>
+          </span>
+        <p class="card-value">
             $<%= String.format("%.2f",
                 (Double) request.getAttribute("totalBudget")) %>
         </p>
+        </div>
     </div>
 
     <div class="card dash_card entry_card">
         <h2>Remaining Balance</h2>
-        <p>
+        <div class="card-body">
+            <span class="card-icon balance-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                  <rect x="3" y="13" width="4" height="8"/>
+                  <rect x="10" y="8" width="4" height="13"/>
+                  <rect x="17" y="3" width="4" height="18"/>
+              </svg>
+            </span>
+        <p class="card-value">
             $<%= String.format("%.2f",
                 (Double) request.getAttribute("remainingBalance")) %>
         </p>
+        </div>
     </div>
 
 </div>
