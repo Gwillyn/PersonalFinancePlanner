@@ -139,10 +139,8 @@
 }
 
 .card-value {
-  font-family: Georgia, "Times New Roman", serif;
   margin: 0 !important;
   font-size: 38px !important;
-  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 700px) {
