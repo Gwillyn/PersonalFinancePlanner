@@ -109,6 +109,11 @@
   font-weight: bold;
 }
 
+.card-icon svg {
+  width: 34px;
+  height: 34px;
+}
+
 .income-icon {
   background: #dff3e4;
   color: #25834f;
@@ -119,6 +124,18 @@
   background: #fbdede;
   color: #c83232;
   border-color: #c83232;
+}
+
+.budget-icon {
+  background: #dcecfb;
+  color: #287ec5;
+  border-color: #287ec5;
+}
+
+.balance-icon {
+  background: #fff1c7;
+  color: #c58a00;
+  border-color: #c58a00;
 }
 
 .card-value {
