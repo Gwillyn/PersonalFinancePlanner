@@ -60,6 +60,8 @@
     <% } %>
 
 
+    <!-- ADD SAVINGS GOAL FORM -->
+
     <form action="${pageContext.request.contextPath}/savings"
           method="post">
 
@@ -180,6 +182,9 @@
         if (savingsGoals != null && !savingsGoals.isEmpty()) {
 
             for (Map<String, Object> goal : savingsGoals) {
+
+                int goalId =
+                        ((Number) goal.get("goalId")).intValue();
     %>
 
 
@@ -232,6 +237,152 @@
                 <strong>Status:</strong>
                 <%= goal.get("goalStatus") %>
             </p>
+
+
+            <!-- EDIT SAVINGS GOAL -->
+
+            <details>
+
+                <summary style="cursor: pointer;">
+                    Edit
+                </summary>
+
+                <br>
+
+                <form action="${pageContext.request.contextPath}/savings"
+                      method="post">
+
+                    <input type="hidden"
+                           name="action"
+                           value="update">
+
+                    <input type="hidden"
+                           name="goalId"
+                           value="<%= goalId %>">
+
+
+                    <div>
+
+                        <label>
+                            Goal Name:
+                        </label>
+
+                        <input type="text"
+                               name="goalName"
+                               value="<%= goal.get("goalName") %>"
+                               required>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <div>
+
+                        <label>
+                            Target Amount:
+                        </label>
+
+                        <input type="number"
+                               name="targetAmount"
+                               value="<%= goal.get("targetAmount") %>"
+                               min="0.01"
+                               step="0.01"
+                               required>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <div>
+
+                        <label>
+                            Current Amount:
+                        </label>
+
+                        <input type="number"
+                               name="currentAmount"
+                               value="<%= goal.get("currentAmount") %>"
+                               min="0"
+                               step="0.01"
+                               required>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <div>
+
+                        <label>
+                            Monthly Contribution:
+                        </label>
+
+                        <input type="number"
+                               name="monthlyContribution"
+                               value="<%= goal.get("monthlyContribution") %>"
+                               min="0"
+                               step="0.01"
+                               required>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <div>
+
+                        <label>
+                            Target Date:
+                        </label>
+
+                        <input type="date"
+                               name="targetDate"
+                               value="<%= goal.get("targetDate") %>"
+                               required>
+
+                    </div>
+
+
+                    <br>
+
+
+                    <button type="submit">
+                        Save Changes
+                    </button>
+
+                </form>
+
+            </details>
+
+
+            <br>
+
+
+            <!-- DELETE SAVINGS GOAL -->
+
+            <form action="${pageContext.request.contextPath}/savings"
+                  method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this savings goal?');">
+
+                <input type="hidden"
+                       name="action"
+                       value="delete">
+
+                <input type="hidden"
+                       name="goalId"
+                       value="<%= goalId %>">
+
+                <button type="submit">
+                    Delete
+                </button>
+
+            </form>
 
         </div>
 

@@ -2,8 +2,8 @@ package com.personalBudgetPlanner.database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,10 +16,23 @@ public class SavingsGoalDAO {
             + "(user_id, goal_name, target_amount, current_amount, "
             + "monthly_contribution, target_date, goal_status) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
     private static final String SELECT_GOALS_BY_USER_SQL =
-            "SELECT goal_id, goal_name, target_amount, current_amount, " +
-            "monthly_contribution, target_date, goal_status " +
-            "FROM savings_goals WHERE user_id = ? ORDER BY goal_id DESC";
+            "SELECT goal_id, goal_name, target_amount, current_amount, "
+            + "monthly_contribution, target_date, goal_status "
+            + "FROM savings_goals WHERE user_id = ? ORDER BY goal_id DESC";
+
+    private static final String UPDATE_GOAL_SQL =
+            "UPDATE savings_goals "
+            + "SET goal_name = ?, target_amount = ?, current_amount = ?, "
+            + "monthly_contribution = ?, target_date = ? "
+            + "WHERE goal_id = ? AND user_id = ?";
+
+    private static final String DELETE_GOAL_SQL =
+            "DELETE FROM savings_goals "
+            + "WHERE goal_id = ? AND user_id = ?";
+
+
     public boolean addSavingsGoal(int userId,
                                   String goalName,
                                   double targetAmount,
@@ -48,7 +61,8 @@ public class SavingsGoalDAO {
             return false;
         }
     }
-    
+
+
     public List<Map<String, Object>> getSavingsGoalsByUserId(int userId) {
 
         List<Map<String, Object>> goals = new ArrayList<>();
@@ -109,5 +123,56 @@ public class SavingsGoalDAO {
         }
 
         return goals;
+    }
+
+
+    public boolean updateSavingsGoal(int goalId,
+                                     int userId,
+                                     String goalName,
+                                     double targetAmount,
+                                     double currentAmount,
+                                     double monthlyContribution,
+                                     java.sql.Date targetDate) {
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(UPDATE_GOAL_SQL)) {
+
+            statement.setString(1, goalName);
+            statement.setDouble(2, targetAmount);
+            statement.setDouble(3, currentAmount);
+            statement.setDouble(4, monthlyContribution);
+            statement.setDate(5, targetDate);
+            statement.setInt(6, goalId);
+            statement.setInt(7, userId);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            return rowsUpdated > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean deleteSavingsGoal(int goalId, int userId) {
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(DELETE_GOAL_SQL)) {
+
+            statement.setInt(1, goalId);
+            statement.setInt(2, userId);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            return rowsDeleted > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

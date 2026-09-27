@@ -29,17 +29,7 @@ public class SavingsGoalServlet extends HttpServlet {
             return;
         }
 
-        int userId = (Integer) session.getAttribute("userId");
-
-        SavingsGoalDAO savingsGoalDAO = new SavingsGoalDAO();
-
-        request.setAttribute(
-                "savingsGoals",
-                savingsGoalDAO.getSavingsGoalsByUserId(userId)
-        );
-
-        request.getRequestDispatcher("/WEB-INF/views/savings.jsp")
-               .forward(request, response);
+        loadGoalsAndForward(request, response, session);
     }
 
     @Override
@@ -51,6 +41,15 @@ public class SavingsGoalServlet extends HttpServlet {
 
         if (session == null || session.getAttribute("userId") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        int userId = (Integer) session.getAttribute("userId");
+
+        String action = request.getParameter("action");
+
+        if ("delete".equals(action)) {
+            deleteGoal(request, response, session, userId);
             return;
         }
 
@@ -99,36 +98,148 @@ public class SavingsGoalServlet extends HttpServlet {
 
             } else {
 
-                int userId =
-                        (Integer) session.getAttribute("userId");
-
                 Date date = Date.valueOf(targetDate);
 
                 SavingsGoalDAO savingsGoalDAO =
                         new SavingsGoalDAO();
 
-                boolean saved =
-                        savingsGoalDAO.addSavingsGoal(
-                                userId,
-                                goalName.trim(),
-                                target,
-                                current,
-                                monthly,
-                                date
+                if ("update".equals(action)) {
+
+                    String goalIdValue =
+                            request.getParameter("goalId");
+
+                    if (goalIdValue == null
+                            || goalIdValue.trim().isEmpty()) {
+
+                        request.setAttribute(
+                                "errorMessage",
+                                "Savings goal could not be updated."
                         );
 
-                if (saved) {
+                    } else {
+
+                        int goalId =
+                                Integer.parseInt(goalIdValue);
+
+                        boolean updated =
+                                savingsGoalDAO.updateSavingsGoal(
+                                        goalId,
+                                        userId,
+                                        goalName.trim(),
+                                        target,
+                                        current,
+                                        monthly,
+                                        date
+                                );
+
+                        if (updated) {
+
+                            request.setAttribute(
+                                    "successMessage",
+                                    "Savings goal was updated successfully."
+                            );
+
+                        } else {
+
+                            request.setAttribute(
+                                    "errorMessage",
+                                    "Savings goal could not be updated."
+                            );
+                        }
+                    }
+
+                } else {
+
+                    boolean saved =
+                            savingsGoalDAO.addSavingsGoal(
+                                    userId,
+                                    goalName.trim(),
+                                    target,
+                                    current,
+                                    monthly,
+                                    date
+                            );
+
+                    if (saved) {
+
+                        request.setAttribute(
+                                "successMessage",
+                                "Savings goal was saved successfully."
+                        );
+
+                    } else {
+
+                        request.setAttribute(
+                                "errorMessage",
+                                "Savings goal could not be saved."
+                        );
+                    }
+                }
+            }
+
+        } catch (NumberFormatException e) {
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Please enter valid numeric values."
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Please enter a valid target date."
+            );
+        }
+
+        loadGoalsAndForward(request, response, session);
+    }
+
+    private void deleteGoal(HttpServletRequest request,
+                            HttpServletResponse response,
+                            HttpSession session,
+                            int userId)
+            throws ServletException, IOException {
+
+        try {
+
+            String goalIdValue =
+                    request.getParameter("goalId");
+
+            if (goalIdValue == null
+                    || goalIdValue.trim().isEmpty()) {
+
+                request.setAttribute(
+                        "errorMessage",
+                        "Savings goal could not be deleted."
+                );
+
+            } else {
+
+                int goalId =
+                        Integer.parseInt(goalIdValue);
+
+                SavingsGoalDAO savingsGoalDAO =
+                        new SavingsGoalDAO();
+
+                boolean deleted =
+                        savingsGoalDAO.deleteSavingsGoal(
+                                goalId,
+                                userId
+                        );
+
+                if (deleted) {
 
                     request.setAttribute(
                             "successMessage",
-                            "Savings goal was saved successfully."
+                            "Savings goal was deleted successfully."
                     );
 
                 } else {
 
                     request.setAttribute(
                             "errorMessage",
-                            "Savings goal could not be saved."
+                            "Savings goal could not be deleted."
                     );
                 }
             }
@@ -137,14 +248,7 @@ public class SavingsGoalServlet extends HttpServlet {
 
             request.setAttribute(
                     "errorMessage",
-                    "Please enter valid numeric amounts."
-            );
-
-        } catch (IllegalArgumentException e) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Please enter a valid target date."
+                    "Invalid savings goal."
             );
         }
 
