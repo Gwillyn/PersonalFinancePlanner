@@ -1,3 +1,5 @@
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
@@ -100,17 +102,64 @@
 </div>
 
 
+<%
+  List<Map<String, Object>> savingsGoals =
+              (List<Map<String, Object>>)
+              request.getAttribute("savingsGoals");
+
+      Map<String, Object> featuredGoal = null;
+      double progress = 0;
+
+      if (savingsGoals != null && !savingsGoals.isEmpty()) {
+          featuredGoal = savingsGoals.get(0);
+
+          double currentAmount =
+                  ((Number) featuredGoal.get("currentAmount")).doubleValue();
+
+          double targetAmount =
+                  ((Number) featuredGoal.get("targetAmount")).doubleValue();
+
+          if (targetAmount > 0) {
+              progress = Math.min(100,
+                      (currentAmount / targetAmount) * 100);
+          }
+      }
+  %>
 <div class="budget-grid">
     <div class="card dash_card entry_card"
          onclick="window.location.href='${pageContext.request.contextPath}/savings'">
         <h2>Savings Goals</h2>
-        <p>View Goals</p>
-    </div>
+        <% if (featuredGoal != null) { %>
 
-    <div class="card dash_card entry_card"
-         onclick="window.location.href='${pageContext.request.contextPath}/profile'">
-        <h2>Profile</h2>
-        <p>View Profile</p>
+          <h3 class="saving-title">
+              <%= featuredGoal.get("goalName") %>
+          </h3>
+
+          <p class="goal-amount">
+              $<%= String.format("%.2f",
+                  ((Number) featuredGoal.get("currentAmount")).doubleValue()) %>
+              /
+              $<%= String.format("%.2f",
+                  ((Number) featuredGoal.get("targetAmount")).doubleValue()) %>
+          </p>
+
+          <div class="goal-progress">
+              <div class="goal-progress-fill"
+                  style="width: <%= progress %>%;">
+              </div>
+          </div>
+
+          <p class="goal-percent">
+              <%= String.format("%.0f", progress) %>% complete
+          </p>
+
+          <% } else { %>
+
+            <p>No savings goals.</p>
+
+          <% } %>
+
+        <p class="goals-link">View all goals</p>
     </div>
 </div>
 

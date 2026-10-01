@@ -91,6 +91,13 @@
   margin: 0;
 }
 
+.budget-grid .card:only-child {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0; 
+}
+
+
 .card-body {
   display: flex;
   align-items: center;
@@ -141,6 +148,44 @@
 .card-value {
   margin: 0 !important;
   font-size: 38px !important;
+}
+
+.goal-progress {
+  height: 16px;
+  margin: 16px 24px 8px;
+  border: 2px solid var(--nav-blue);
+  background: #e4e8ed;
+}
+
+.goals-link {
+    font-size: 28px !important;
+}
+
+.goal-progress-fill {
+  height: 100%;
+  background: #25834f;
+  transition: width 0.4s ease;
+}
+
+.goal-amount {
+  margin: 0 24px !important;
+  font-size: 22px !important;
+  text-align: left;
+}
+
+.goal-percent {
+  margin: 0 24px !important;
+  font-size: 16px !important;
+  text-align: right;
+}
+
+.saving-title {
+  display: table;
+  margin: 20px 24px 12px;
+  padding: 8px 12px;
+  border-left: 6px solid #25834f;
+  font-size: 24px !important;
+  text-align: left !important;
 }
 
 @media (max-width: 700px) {
