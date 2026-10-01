@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import com.personalBudgetPlanner.database.BudgetDAO;
 import com.personalBudgetPlanner.database.IncomeDAO;
 import com.personalBudgetPlanner.database.ExpenseDAO;
+import com.personalBudgetPlanner.database.SavingsGoalDAO;
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -36,6 +37,7 @@ public class DashboardServlet extends HttpServlet {
         IncomeDAO incomeDAO = new IncomeDAO();
         ExpenseDAO expenseDAO = new ExpenseDAO();
         BudgetDAO budgetDAO = new BudgetDAO();
+        SavingsGoalDAO savingsGoalDAO = new SavingsGoalDAO();
 
         double totalIncome = incomeDAO.getMonthlyIncome(userId);
 
@@ -60,6 +62,11 @@ public class DashboardServlet extends HttpServlet {
         request.setAttribute(
                 "remainingBalance",
                 remainingBalance);
+
+        request.setAttribute(
+                "savingsGoals",
+                savingsGoalDAO.getSavingsGoalsByUserId(userId)
+    );
 
         request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp")
                 .forward(request, response);
