@@ -36,7 +36,7 @@
             </svg>
           </span>          
           <p class="card-value">
-              $<%= String.format("%.2f",
+              $<%= String.format("%.0f",
                   (Double) request.getAttribute("totalIncome")) %>
           </p>
         </div>
@@ -55,7 +55,7 @@
               </svg>
           </span>  
           <p class="card-value">
-              $<%= String.format("%.2f",
+              $<%= String.format("%.0f",
                   (Double) request.getAttribute("totalExpenses")) %>
           </p>
         </div>
@@ -76,7 +76,7 @@
             </svg>
           </span>
         <p class="card-value">
-            $<%= String.format("%.2f",
+            $<%= String.format("%.0f",
                 (Double) request.getAttribute("totalBudget")) %>
         </p>
         </div>
@@ -93,7 +93,7 @@
               </svg>
             </span>
         <p class="card-value">
-            $<%= String.format("%.2f",
+            $<%= String.format("%.0f",
                 (Double) request.getAttribute("remainingBalance")) %>
         </p>
         </div>
@@ -136,10 +136,10 @@
           </h3>
 
           <p class="goal-amount">
-              $<%= String.format("%.2f",
+              $<%= String.format("%.0f",
                   ((Number) featuredGoal.get("currentAmount")).doubleValue()) %>
               /
-              $<%= String.format("%.2f",
+              $<%= String.format("%.0f",
                   ((Number) featuredGoal.get("targetAmount")).doubleValue()) %>
           </p>
 

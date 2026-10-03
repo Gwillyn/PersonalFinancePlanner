@@ -170,6 +170,27 @@ button {
   transform: translate(-2px, -2px);
 }
 
+@media (max-width: 600px) {
+  .container {
+    width: calc(100% - 32px);
+    margin: 40px auto 24px;
+    padding: 16px;
+  }
+
+  .entry_list {
+    width: calc(100% - 32px);
+  }
+
+  .card {
+    width: auto;
+    margin: 12px 0;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+}
+
 @media (max-width: 800px) {
   .entry_list {
     grid-template-columns: 1fr;
