@@ -4,6 +4,16 @@
         Personal Budget Tracker
     </div>
 
+    <button class="menu-toggle"
+            type="button"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+            onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
     <ul class="nav-links">
 
         <li>
@@ -51,3 +61,13 @@
     </ul>
 
 </nav>
+
+<script>
+function toggleMenu() {
+    const navbar = document.querySelector(".navbar");
+    const button = document.querySelector(".menu-toggle");
+    const isOpen = navbar.classList.toggle("nav-open");
+
+    button.setAttribute("aria-expanded", isOpen);
+}
+</script>

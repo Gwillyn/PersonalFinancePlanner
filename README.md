@@ -100,7 +100,9 @@ PersonalFinancePlanner/
     └── css/              # Application stylesheets
 ```
 
-## Database Setup
+## Database
+
+### Setup
 
 1. Install and start MySQL.
 2. Create the database and tables by running the schema file:
@@ -127,6 +129,27 @@ PersonalFinancePlanner/
    export DB_PASSWORD='your-password'
    ```
 
+### Files
+
+- `schema.sql` – Creates the application database and tables.
+- `personal-finance-planner-erd-v1.dbml` – Editable ERD source file.
+- `personal-finance-planner-erd-v1.png` – Visual ERD diagram.
+
+### Tables
+
+The application uses the following tables:
+
+- `users`
+- `income_sources`
+- `categories`
+- `recurring_expenses`
+- `budget_plans`
+- `budget_allocations`
+- `savings_goals`
+
+The schema supports user authentication, income and expense tracking,
+budget allocation, and savings goal management.
+
 ## Usage
 
 1. Import the project into Eclipse as an existing Dynamic Web Project.
@@ -147,8 +170,7 @@ PersonalFinancePlanner/
 
 ## Contributors
 
-1. Walaa Abd Al Khane - https://github.com/Walaa1505, abda0156@algonquinlive.com
-2. Maria Novikova - https://github.com/marianovikova617
-3. Gwillyn Donaghy - https://github.com/Gwillyn, dona0173@algonquinlive.com
-4. Jacob Daviau - davi1113@algonquinlive.com
-
+1. Walaa Abd Al Khane - <https://github.com/Walaa1505>, <abda0156@algonquinlive.com>
+2. Maria Novikova - <https://github.com/marianovikova617>
+3. Gwillyn Donaghy - <https://github.com/Gwillyn>, <dona0173@algonquinlive.com>
+4. Jacob Daviau - <davi1113@algonquinlive.com>
