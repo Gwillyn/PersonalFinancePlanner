@@ -65,7 +65,7 @@
     <form action="${pageContext.request.contextPath}/savings"
           method="post">
 
-        <div class="entries">
+        <div class="entries savings-entries">
 
             <div>
 
