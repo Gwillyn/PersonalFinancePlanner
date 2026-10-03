@@ -37,6 +37,11 @@ public class BudgetServlet extends HttpServlet {
 
     request.setAttribute("monthlyIncome", monthlyIncome);
 
+    BudgetDAO budgetDAO = new BudgetDAO();
+    double currentBudget = budgetDAO.getTotalBudget(userId);
+
+    request.setAttribute("currentBudget", currentBudget);
+
     request.getRequestDispatcher("/WEB-INF/views/budget.jsp")
         .forward(request, response);
   }
@@ -58,6 +63,10 @@ public class BudgetServlet extends HttpServlet {
     IncomeDAO incomeDAO = new IncomeDAO();
     double monthlyIncome = incomeDAO.getMonthlyIncome(userId);
     request.setAttribute("monthlyIncome", monthlyIncome);
+
+    BudgetDAO budgetDAO = new BudgetDAO();
+    double currentBudget = budgetDAO.getTotalBudget(userId);
+    request.setAttribute("currentBudget", currentBudget);
 
     String budgetAmount = request.getParameter("budgetAmount");
 
@@ -111,8 +120,6 @@ public class BudgetServlet extends HttpServlet {
 
         } else {
 
-          BudgetDAO budgetDAO = new BudgetDAO();
-
           Integer planId = budgetDAO.getOrCreateBudgetPlan(
               userId,
               month,
@@ -126,12 +133,14 @@ public class BudgetServlet extends HttpServlet {
 
           } else {
 
-            boolean saved = budgetDAO.addBudgetAllocation(
+            boolean saved = budgetDAO.setBudgetAllocation(
                 planId,
                 categoryId,
                 budget);
 
             if (saved) {
+
+              request.setAttribute("currentBudget", budget);
 
               double remainingAmount = monthlyIncome - budget;
 

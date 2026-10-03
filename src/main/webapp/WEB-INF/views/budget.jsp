@@ -82,6 +82,16 @@
 
 </div>
 
+<div class="budget-display">
+    <div class="card entry_card budget-card">
+        <h2>Current Budget</h2>
+
+        <p class="budget-amount">
+            $<%= String.format("%.2f",
+                (Double) request.getAttribute("currentBudget")) %>
+        </p>
+    </div>
+</div>
 </body>
 
 </html>

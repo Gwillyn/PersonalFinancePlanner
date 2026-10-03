@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+
 
 public class BudgetDAO {
 
@@ -81,6 +83,56 @@ public class BudgetDAO {
     return null;
   }
 
+  public boolean setBudgetAllocation(int planId,
+                                   int categoryId,
+                                   double allocatedAmount) {
+
+    String deleteSql =
+        "DELETE FROM budget_allocations "
+        + "WHERE plan_id = ?";
+
+    String insertSql =
+        "INSERT INTO budget_allocations "
+        + "(plan_id, category_id, allocated_amount) "
+        + "VALUES (?, ?, ?)";
+
+    try (Connection connection = DBConnection.getConnection()) {
+
+      connection.setAutoCommit(false);
+
+      try (PreparedStatement deleteStatement =
+              connection.prepareStatement(deleteSql);
+          PreparedStatement insertStatement =
+              connection.prepareStatement(insertSql)) {
+
+        deleteStatement.setInt(1, planId);
+        deleteStatement.executeUpdate();
+
+        insertStatement.setInt(1, planId);
+        insertStatement.setInt(2, categoryId);
+        insertStatement.setDouble(3, allocatedAmount);
+
+        int rowsInserted = insertStatement.executeUpdate();
+
+        if (rowsInserted > 0) {
+          connection.commit();
+          return true;
+        }
+
+        connection.rollback();
+        return false;
+
+      } catch (SQLException e) {
+        connection.rollback();
+        throw e;
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+}
+
   public boolean addBudgetAllocation(int planId,
       int categoryId,
       double allocatedAmount) {
@@ -105,28 +157,32 @@ public class BudgetDAO {
 
   public double getTotalBudget(int userId) {
 
+    LocalDate currentDate = LocalDate.now();
+
     String sql = "SELECT COALESCE(SUM(ba.allocated_amount), 0) AS total_budget "
-        + "FROM budget_allocations ba "
-        + "JOIN budget_plans bp ON ba.plan_id = bp.plan_id "
-        + "WHERE bp.user_id = ?";
+      + "FROM budget_allocations ba "
+      + "JOIN budget_plans bp ON ba.plan_id = bp.plan_id "
+      + "WHERE bp.user_id = ? "
+      + "AND bp.plan_month = ? "
+      + "AND bp.plan_year = ?";
 
     try (Connection connection = DBConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(sql)) {
 
       statement.setInt(1, userId);
+      statement.setInt(2, currentDate.getMonthValue());
+      statement.setInt(3, currentDate.getYear());
 
-      try (ResultSet resultSet = statement.executeQuery()) {
-
-        if (resultSet.next()) {
-          return resultSet.getDouble("total_budget");
-        }
+     try (ResultSet resultSet = statement.executeQuery()) {
+      if (resultSet.next()) {
+        return resultSet.getDouble("total_budget");
       }
-
-    } catch (SQLException e) {
-      e.printStackTrace();
     }
 
-    return 0.0;
+  } catch (SQLException e) {
+    e.printStackTrace();
+  }
+  return 0.0;  
   }
 
 }

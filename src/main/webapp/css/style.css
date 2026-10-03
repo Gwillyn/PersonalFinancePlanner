@@ -101,6 +101,10 @@ label {
 	box-shadow: 5px 5px;
 }
 
+.savings-entries {
+  padding-bottom: 50px;
+}
+
 button {
   margin-bottom: 20px;
   font-size: inherit;
@@ -168,6 +172,24 @@ button {
   background: #e7f1f8;
   box-shadow: 8px 8px var(--nav-blue);
   transform: translate(-2px, -2px);
+}
+
+.budget-display {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto 40px;
+}
+
+.budget-card {
+  width: 400px;
+  margin: 20px;
+}
+
+.budget-amount {
+  margin: 24px 0;
+  font-size: 42px;
+  font-weight: bold;
 }
 
 @media (max-width: 600px) {

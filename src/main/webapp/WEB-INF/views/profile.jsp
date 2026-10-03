@@ -107,13 +107,7 @@
                     USD
                 </option>
 
-                <option value="EUR"
-                    <%= "EUR".equals(session.getAttribute("preferredCurrency"))
-                        ? "selected" : "" %>>
-                    EUR
-                </option>
-
-            </select>
+                         </select>
         </div>
 
         <br>
