@@ -5,12 +5,25 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
 
+<%!
+    private String escapeHtmlAttribute(Object value) {
+        if (value == null) {
+            return "";
+        }
+
+        return String.valueOf(value)
+                .replace("&", "&amp;")
+                .replace("\"", "&quot;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;");
+    }
+%>
+
 <!DOCTYPE html>
 
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -23,7 +36,6 @@
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/navbar.css">
-
 </head>
 
 <body>
@@ -269,7 +281,7 @@
 
                         <input type="text"
                                name="goalName"
-                               value="<%= goal.get("goalName") %>"
+                               value="<%= escapeHtmlAttribute(goal.get("goalName")) %>"
                                required>
 
                     </div>
