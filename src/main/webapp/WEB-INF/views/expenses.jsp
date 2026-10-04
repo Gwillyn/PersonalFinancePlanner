@@ -168,9 +168,10 @@
         <div class="entry_actions">
 
             <button type="button"
+                    data-name="<%= String.valueOf(expense.get("expenseName")).replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;") %>"
                     onclick="showEditForm(
                         '<%= expense.get("expenseId") %>',
-                        '<%= expense.get("expenseName") %>',
+                        this.dataset.name,
                         '<%= expense.get("amount") %>',
                         '<%= expense.get("frequency") %>'
                     )">
